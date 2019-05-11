@@ -8,10 +8,20 @@
 // turn and call the turn function). Keep in mind this example is event-driven. Your complete sketch needs
 // to be written so there's no "delay" commands and the loop() cycles at faster than a 33ms rate. If other
 // processes take longer than 33ms, you'll need to increase PING_INTERVAL so it doesn't get behind.
+//
+// Arduino Pro Mini ATmega328P 5V 16MHz
+//
+// MATRIX: 
+//           1           5            3 
+//                 4             2
+//3,4 monitoring right hand side front distans 
+//2,1 monitoring left hand side front distans
+// 5 checking on stright ahead
+// see pictures attached
 // ---------------------------------------------------------------------------
 #include <NewPing.h>
 
-#define SONAR_NUM     6 // Number of sensors.
+#define SONAR_NUM     5 // Number of sensors.
 #define MAX_DISTANCE 100 // Maximum distance (in cm) to ping.
 #define PING_INTERVAL 31 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
 
@@ -20,12 +30,14 @@ unsigned int cm[SONAR_NUM];         // Where the ping distances are stored.
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 
 NewPing sonar[SONAR_NUM] = {     // Sensor object array.
-  NewPing(9, 10, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
-  NewPing(7, 8, MAX_DISTANCE),
-  NewPing(5, 6, MAX_DISTANCE),
-  NewPing(13, 4, MAX_DISTANCE),
-  NewPing(A1, A2, MAX_DISTANCE),
-  NewPing(11, 12, MAX_DISTANCE)
+  NewPing(A0, 5, MAX_DISTANCE), //( 5 )
+  NewPing(A2, 3, MAX_DISTANCE), //( 4 ) Each sensor's trigger pin, echo pin, and max distance to ping.
+  NewPing(12, 7, MAX_DISTANCE), //( 3 )
+  NewPing(A1, 4, MAX_DISTANCE), //( 2 )
+  NewPing(13, 6, MAX_DISTANCE)  //( 1 )
+
+//  NewPing(11, 8, MAX_DISTANCE),
+//  NewPing(10, 9, MAX_DISTANCE)
 };
 
 void setup() {
