@@ -20,6 +20,7 @@
 // see pictures attached
 // ---------------------------------------------------------------------------
 #include <NewPing.h>
+#include "Filter.h"
 
 #define SONAR_NUM     5 // Number of sensors.
 #define MAX_DISTANCE 100 // Maximum distance (in cm) to ping.
@@ -30,14 +31,29 @@ unsigned int cm[SONAR_NUM];         // Where the ping distances are stored.
 uint8_t currentSensor = 0;          // Keeps track of which sensor is active.
 
 NewPing sonar[SONAR_NUM] = {     // Sensor object array.
-  NewPing(A0, 5, MAX_DISTANCE), //( 5 )
   NewPing(A2, 3, MAX_DISTANCE), //( 4 ) Each sensor's trigger pin, echo pin, and max distance to ping.
-  NewPing(12, 7, MAX_DISTANCE), //( 3 )
   NewPing(A1, 4, MAX_DISTANCE), //( 2 )
+  NewPing(A0, 5, MAX_DISTANCE), //( 5 )  
+  NewPing(12, 7, MAX_DISTANCE), //( 3 )  
   NewPing(13, 6, MAX_DISTANCE)  //( 1 )
 
 //  NewPing(11, 8, MAX_DISTANCE),
 //  NewPing(10, 9, MAX_DISTANCE)
+};
+
+unsigned int filterWeight = 90;
+ExponentialFilter<float> FilteredTemperature1(filterWeight, 0);
+ExponentialFilter<float> FilteredTemperature2(filterWeight, 0);
+ExponentialFilter<float> FilteredTemperature3(filterWeight, 0);
+ExponentialFilter<float> FilteredTemperature4(filterWeight, 0);
+ExponentialFilter<float> FilteredTemperature5(filterWeight, 0);
+
+ExponentialFilter<float> filters[SONAR_NUM] = {
+  FilteredTemperature1,
+  FilteredTemperature2,
+  FilteredTemperature3,
+  FilteredTemperature4,
+  FilteredTemperature5
 };
 
 void setup() {
@@ -62,14 +78,17 @@ void loop() {
 }
 
 void echoCheck() { // If ping received, set the sensor distance to array.
-  if (sonar[currentSensor].check_timer())
-    cm[currentSensor] = sonar[currentSensor].ping_result / US_ROUNDTRIP_CM;
+  if (sonar[currentSensor].check_timer()) {
+    filters[currentSensor].Filter(sonar[currentSensor].ping_result);
+    cm[currentSensor] = filters[currentSensor].Current() / US_ROUNDTRIP_CM ;
+  }
+    // US_ROUNDTRIP_CM;
 }
 
 void oneSensorCycle() { // Sensor ping cycle complete, do something with the results.
   // The following code would be replaced with your code that does something with the ping results.
   for (uint8_t i = 0; i < SONAR_NUM; i++) {
-    Serial.print(i);
+    Serial.print(i+1);
     Serial.print("=");
     Serial.print(cm[i]);
     Serial.print("cm ");
