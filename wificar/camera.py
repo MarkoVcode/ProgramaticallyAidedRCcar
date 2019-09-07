@@ -7,6 +7,7 @@ import random
 #import Adafruit_PCA9685
 import socket
 import sys
+import UDPIOClient
 
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -16,7 +17,7 @@ message = 'This is the message.  It will be repeated.'
 
 #pwm = Adafruit_PCA9685.PCA9685()
 #pwm.set_pwm_freq(60)
-
+udpClient = UDPClient()
 
 black = (0,0,0)
 white = (255,255,255)
