@@ -5,6 +5,8 @@ import random
 import Queue
 import socket
 import sys
+import hardware
+from hardware import interactionID
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -13,6 +15,9 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = ('localhost', 10000)
 sock.bind(server_address)
 logging.debug('Starting up on %s port %s' % server_address)
+
+hw = hardware.HardwareStrategy()
+allSensors = hw.readSensors()
 
 BUF_SIZE = 50
 q = Queue.Queue(BUF_SIZE)
@@ -47,9 +52,12 @@ class ConsumerThread(threading.Thread):
     def run(self):
         while True:
             if not q.empty():
+                intId = interactionID()
                 item = q.get()
-                logging.debug('Getting ' + str(item) 
+                logging.debug(intId + ' Getting ' + str(item) 
                               + ' : ' + str(q.qsize()) + ' items in queue')
+                hw.executeIOInteraction(intId, str(item))
+            hw.readSensors()
         return
 
 if __name__ == '__main__':
