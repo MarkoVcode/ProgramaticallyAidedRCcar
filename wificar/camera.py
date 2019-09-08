@@ -37,6 +37,7 @@ gameExit = False
 pressedXcounter = 0
 direction = 0
 throttle = 0
+headlights = 0
 
 DIR_MAX_POSITION = 5
 DIR_MIN_POSITION = -5
@@ -72,6 +73,15 @@ def throttle_increase():
 def throttle_decrease():
     udpClient.sendPWM('thr',-1)
     
+def enable_headlights(headl):
+    return_value = 0
+    if headl > 0:
+        udpClient.sendPWM('headl',0)
+    else:
+        udpClient.sendPWM('headl',1)
+        return_value = 1
+    return return_value
+    
 def render_hud():
     #sensors = udpClient.fetchSensors('ALL')
     screen.blit(see_through, see_through_rect)
@@ -102,6 +112,10 @@ while True:
                 throttle_decrease()
             if event.key == pygame.K_h:
                 udpClient.sendPWM('horn',1)
+            if event.key == pygame.K_f:
+                udpClient.sendPWM('headlblink',1)
+            if event.key == pygame.K_g:
+                headlights = enable_headlights(headlights)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_a or event.key == pygame.K_d:
@@ -110,6 +124,8 @@ while True:
                 udpClient.sendPWM('thr',0)
             if event.key == pygame.K_h:
                 udpClient.sendPWM('horn',0)
+            if event.key == pygame.K_f:
+                udpClient.sendPWM('headlblink',0)
 
     keys=pygame.key.get_pressed()
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:
