@@ -5,6 +5,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
 
+# throttle neutral 350 max 370 min 330
+# dir neutral 340 max 380 min 300
 
 #mesages from keyboard
 message = 'i2c:pwm:dir:0'
