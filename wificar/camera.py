@@ -4,20 +4,17 @@ import pygame
 import pygame.camera
 import time
 import random
-#import Adafruit_PCA9685
-import socket
+#import socket
 import sys
 import UDPIOClient
 
 # Create a UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-server_address = ('localhost', 10000)
-message = 'This is the message.  It will be repeated.'
+#server_address = ('localhost', 10000)
+#message = 'This is the message.  It will be repeated.'
 
-#pwm = Adafruit_PCA9685.PCA9685()
-#pwm.set_pwm_freq(60)
-udpClient = UDPClient()
+udpClient = UDPIOClient()
 
 black = (0,0,0)
 white = (255,255,255)
@@ -45,14 +42,14 @@ y_change = yoffset
 gameExit = False
 pressedXcounter = 0
 
-def send_to_io_server(goal, value):
+#def send_to_io_server(goal, value):
     # Send data
-    print >>sys.stderr, 'sending "%s"' % message
-    sent = sock.sendto(goal, server_address)
+ #   print >>sys.stderr, 'sending "%s"' % message
+  #  sent = sock.sendto(goal, server_address)
     # Receive response
-    print >>sys.stderr, 'waiting to receive'
-    data, server = sock.recvfrom(4096)
-    print >>sys.stderr, 'received "%s"' % data
+   # print >>sys.stderr, 'waiting to receive'
+    #data, server = sock.recvfrom(4096)
+    #print >>sys.stderr, 'received "%s"' % data
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -110,9 +107,11 @@ while True:
             x_change = x_change + 10
 
     #pwm.set_pwm(3, 0, x_change)
-    send_to_io_server("pwm_direction", x_change)
+    #send_to_io_server("pwm_direction", x_change)
+    udpClient.sendPWM('dir',x_change)
     #pwm.set_pwm(2, 0, y_change)
-    send_to_io_server("pwm_throttle", y_change)
+    #send_to_io_server("pwm_throttle", y_change)
+    udpClient.sendPWM('thr',y_change)
     print(x_change)
     print(y_change) 
 
