@@ -1,6 +1,7 @@
 import socket
 import sys
 import logging
+import json
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -23,6 +24,7 @@ message = 'i2c:pwm:dir:0'
 #message from the web app
 #message = 'gpio:pin:engaged:0' # engaged warning LED
 #message = 'i2c:oled:msg:192.168.0.33;q2;engaged'
+#message = 'read:i2c'
 
 UDP_SERVER_ADDRESS = 'localhost'
 UDP_SERVER_PORT = 10000
@@ -30,7 +32,7 @@ UDP_SERVER_PORT = 10000
 UDP_MESSAGE_PREFIX_I2C_PWM = 'i2c:pwm:'
 UDP_MESSAGE_PREFIX_GPIO_PIN = 'gpio:pin:'
 UDP_MESSAGE_PREFIX_I2C_OLED = 'i2c:oled:'
-UDP_MESSAGE_PREFIX_SENSOR_READ = 'sensor:read:'
+UDP_MESSAGE_PREFIX_SENSOR_READ = 'read:'
 
 # define a class
 class UDPIOClient:
@@ -52,7 +54,9 @@ class UDPIOClient:
 
     def fetchSensors(self, sensor):
         message = UDP_MESSAGE_PREFIX_SENSOR_READ + str(sensor)
-        return self.dispatch(message)
+        responseString = self.dispatch(message)
+        jsonAcceptableString = responseString.replace("'", "\"")
+        return json.loads(jsonAcceptableString)
 
     def dispatch(self, message):
         sent = self.sock.sendto(message, self.server_address)
@@ -61,7 +65,9 @@ class UDPIOClient:
 
 if __name__ == '__main__':
     p = UDPIOClient()
-    p.dispatch(message)
-    p.sendGPIOPIN('ls1',0)
-    p.sendPWM('dir', 2)
-    p.sendLCD('msg','my message')
+   # p.dispatch(message)
+    sensors = p.fetchSensors("ALL")
+    print(sensors["gps"]["qqq"])
+   # p.sendGPIOPIN('ls1',0)
+   # p.sendPWM('dir', 2)
+   # p.sendLCD('msg','my message')

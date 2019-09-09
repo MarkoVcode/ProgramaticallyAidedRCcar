@@ -17,7 +17,6 @@ sock.bind(server_address)
 logging.debug('Starting up on %s port %s' % server_address)
 
 hw = hardware.HardwareStrategy()
-allSensors = hw.readSensors()
 
 BUF_SIZE = 50
 q = Queue.Queue(BUF_SIZE)
@@ -33,12 +32,18 @@ class ProducerThread(threading.Thread):
         while True:
             logging.debug('Awaiting for the messages. ' + str(q.qsize()) + ' items in queue')
             data, address = sock.recvfrom(4096)
-            if not q.full():
-                q.put(data)
-                logging.debug('Putting ' + str(data)  
-                              + ' : ' + str(q.qsize()) + ' items in queue')
-            if data:
-                sent = sock.sendto(data, address)
+            instElems = data.split(":",)
+            if instElems[0] == "read":
+                sensors = hw.fetchSensors(instElems[1])
+                sent = sock.sendto(str(sensors), address)
+                logging.debug('Returning sensors: ' + str(sensors))
+            else:
+                if not q.full():
+                    q.put(data)
+                    logging.debug('Putting ' + str(data)  
+                                + ' : ' + str(q.qsize()) + ' items in queue')
+                if data:
+                    sent = sock.sendto(data, address)
         return
 
 class ConsumerThread(threading.Thread):
@@ -57,13 +62,11 @@ class ConsumerThread(threading.Thread):
                 logging.debug(intId + ' Getting ' + str(item) 
                               + ' : ' + str(q.qsize()) + ' items in queue')
                 hw.executeIOInteraction(intId, str(item))
-            hw.readSensors()
+            hw.readAllSensorsCycle()
         return
 
 if __name__ == '__main__':
-    
     p = ProducerThread(name='producer')
     c = ConsumerThread(name='consumer')
-
     p.start()
     c.start()

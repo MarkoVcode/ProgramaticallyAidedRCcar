@@ -18,6 +18,8 @@ READ_SENSORS_CYCLE_SKIP = 4000000
 class HardwareStrategy:
     def __init__(self):
        self.read_sensor_cycle_counter = 0
+       self.sensors = {}
+       self.sensorCycle = [1, 0, 0]
        print "Hardware Init"
        
        #pwm = Adafruit_PCA9685.PCA9685()
@@ -46,10 +48,45 @@ class HardwareStrategy:
         else:
             print "Message Unrecognized - IGNORE"
 
-    def readSensors(self):
+    def fetchSensors(self, selectedSensor):
+        if selectedSensor == 'ALL':
+            return self.sensors
+        else:
+            return self.sensors[selectedSensor]
+
+    def readAllSensorsCycle(self):
         if self.read_sensor_cycle_counter >= READ_SENSORS_CYCLE_SKIP :
-            print "returning map with all read sensors"
+            print "Reading sensor from cycle"
+            self.cycleSensorsRead()
             self.read_sensor_cycle_counter = 0
         else:
             self.read_sensor_cycle_counter = self.read_sensor_cycle_counter +1
 
+    def cycleSensorsRead(self):
+        if self.sensorCycle[0] == 1:
+            self.readSensorsGPS()
+            self.sensorCycle[0] = 0
+            self.sensorCycle[1] = 1
+            return
+        elif self.sensorCycle[1] == 1:
+            self.readSensorsI2C()
+            self.sensorCycle[1] = 0
+            self.sensorCycle[2] = 1
+            return            
+        elif self.sensorCycle[2] == 1:                
+            self.readSensors1W()
+            self.sensorCycle[2] = 0
+            self.sensorCycle[0] = 1
+            return              
+
+    def readSensorsGPS(self):
+        self.sensors['gps'] = {"qqq":"dds"}
+        print "Reading GPS"
+
+    def readSensorsI2C(self):
+        self.sensors['i2c'] = ""
+        print "Reading I2C"
+
+    def readSensors1W(self):
+        self.sensors['1w'] = ""
+        print "Reading 1W"
