@@ -5,6 +5,7 @@ import random
 import Queue
 import socket
 import sys
+import gameConfig
 import hardware
 from hardware import interactionID
 
@@ -12,13 +13,13 @@ logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-server_address = ('localhost', 10000)
+server_address = (gameConfig.UDP_SERVER_ADDRESS, gameConfig.UDP_SERVER_PORT)
 sock.bind(server_address)
 logging.debug('Starting up on %s port %s' % server_address)
 
 hw = hardware.HardwareStrategy()
 
-BUF_SIZE = 50
+BUF_SIZE = 20
 q = Queue.Queue(BUF_SIZE)
 
 class ProducerThread(threading.Thread):

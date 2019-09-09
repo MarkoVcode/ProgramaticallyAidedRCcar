@@ -1,0 +1,5 @@
+
+
+
+UDP_SERVER_ADDRESS = 'localhost'
+UDP_SERVER_PORT = 10000

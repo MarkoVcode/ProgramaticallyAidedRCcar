@@ -26,7 +26,7 @@ screen_rect = screen.get_rect()
 
 cam_list = pygame.camera.list_cameras()
 cam = pygame.camera.Camera(cam_list[0],(512,384))
-#cam = pygame.camera.Camera(cam_list[0],(384,384))
+#cam = pygame.camera.Camera(cam_list[0],(284,384))
 cam.start()
 see_through = pygame.Surface((100,100)).convert_alpha()
 see_through.fill(RED_HIGHLIGHT)
@@ -89,7 +89,8 @@ def render_hud():
 
 while True:
     image1 = cam.get_image()
-    image1 = pygame.transform.scale(image1,(640,480))
+    #image1 = pygame.transform.scale(image1,(640,480))
+    image1 = pygame.transform.scale(image1,(720,480))
     #image1 = pygame.transform.scale(image1,(384,384))
     screen.blit(image1,(0,0))
     render_hud()

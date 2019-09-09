@@ -2,6 +2,7 @@ import socket
 import sys
 import logging
 import json
+import gameConfig
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -26,8 +27,8 @@ message = 'i2c:pwm:dir:0'
 #message = 'i2c:oled:msg:192.168.0.33;q2;engaged'
 #message = 'read:i2c'
 
-UDP_SERVER_ADDRESS = 'localhost'
-UDP_SERVER_PORT = 10000
+#UDP_SERVER_ADDRESS = 'localhost'
+#UDP_SERVER_PORT = 10000
 
 UDP_MESSAGE_PREFIX_I2C_PWM = 'i2c:pwm:'
 UDP_MESSAGE_PREFIX_GPIO_PIN = 'gpio:pin:'
@@ -38,7 +39,7 @@ UDP_MESSAGE_PREFIX_SENSOR_READ = 'read:'
 class UDPIOClient:
     def __init__(self):
        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-       self.server_address = (UDP_SERVER_ADDRESS, UDP_SERVER_PORT)
+       self.server_address = (gameConfig.UDP_SERVER_ADDRESS, gameConfig.UDP_SERVER_PORT)
 	
     def sendPWM(self, channel, value):
         message = UDP_MESSAGE_PREFIX_I2C_PWM + str(channel) + ':' + str(value)
