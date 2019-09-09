@@ -1,6 +1,7 @@
 import logging
 import random
 import string
+import gameConfig
 #import Adafruit_PCA9685
 
 logging.basicConfig(level=logging.DEBUG,
