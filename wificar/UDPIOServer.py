@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG,
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = (gameConfig.UDP_SERVER_ADDRESS, gameConfig.UDP_SERVER_PORT)
 sock.bind(server_address)
+
 logging.debug('Starting up on %s port %s' % server_address)
 
 hw = hardware.HardwareStrategy()
@@ -31,6 +32,7 @@ class ProducerThread(threading.Thread):
 
     def run(self):
         while True:
+            time.sleep(0.001)
             logging.debug('Awaiting for the messages. ' + str(q.qsize()) + ' items in queue')
             data, address = sock.recvfrom(4096)
             instElems = data.split(":",)
@@ -57,6 +59,7 @@ class ConsumerThread(threading.Thread):
 
     def run(self):
         while True:
+            time.sleep(0.001)
             if not q.empty():
                 intId = interactionID()
                 item = q.get()
