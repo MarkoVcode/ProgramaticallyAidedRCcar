@@ -133,6 +133,8 @@ while not crashed:
           sys.exit()
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                crashed = True
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 direction = direction_decrease(direction)
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
@@ -141,7 +143,7 @@ while not crashed:
                 throttle_increase()
             if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 throttle_decrease()
-            if event.key == pygame.K_c:
+            if event.key == pygame.K_v:
                 hudRendering = enable_hudRendering(hudRendering)             
             if event.key == pygame.K_h:
                 udpClient.sendPWM('horn',1)                
