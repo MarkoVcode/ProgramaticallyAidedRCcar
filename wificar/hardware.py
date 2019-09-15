@@ -54,27 +54,27 @@ class HardwareStrategy:
             print "Message Unrecognized - IGNORE"
 
     def calculateServoPWMValue(self, requestedValue):
-        if requestedValue == 0:
+        if requestedValue == '0':
             return 340
-        elif requestedValue == 1:
+        elif requestedValue == '1':
             return 350
-        elif requestedValue == 2:
+        elif requestedValue == '2':
             return 360
-        elif requestedValue == 3:
+        elif requestedValue == '3':
             return 370
-        elif requestedValue == 4:
+        elif requestedValue == '4':
             return 380
-        elif requestedValue == 5:
+        elif requestedValue == '5':
             return 390
-        elif requestedValue == -1:
+        elif requestedValue == '-1':
             return 330
-        elif requestedValue == -2:
+        elif requestedValue == '-2':
             return 320
-        elif requestedValue == -3:
+        elif requestedValue == '-3':
             return 310
-        elif requestedValue == -4:
+        elif requestedValue == '-4':
             return 300
-        elif requestedValue == -5:
+        elif requestedValue == '-5':
             return 290
         else:
             return 340
