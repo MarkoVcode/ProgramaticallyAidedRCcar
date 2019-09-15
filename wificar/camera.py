@@ -48,6 +48,7 @@ see_through.fill(RED_HIGHLIGHT)
 see_through_rect = see_through.get_rect(bottomleft=screen_rect.center)
 
 pressedXcounter = 0
+throttlePressed = False
 direction = 0
 throttle = 0
 headlights = 0
@@ -73,7 +74,6 @@ def direction_decrease(dirvalue):
         dirvalue = dirvalue-1
         udpClient.sendPWM('dir',dirvalue)
     return dirvalue
-        #logging.debug('Awaiting for the messages. ' + str(q.qsize()) + ' items in queue')
         
 def direction_increase(dirvalue):
     if dirvalue < DIR_MAX_POSITION:
@@ -143,10 +143,10 @@ while not crashed:
                 direction = direction_decrease(direction)
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 direction = direction_increase(direction)
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                throttle_increase()
-            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                throttle_decrease()
+            #if event.key == pygame.K_UP or event.key == pygame.K_w:
+            #    throttle_increase()
+            #if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+            #    throttle_decrease()
             if event.key == pygame.K_v:
                 hudRendering = enable_hudRendering(hudRendering)             
             if event.key == pygame.K_h:
@@ -162,6 +162,7 @@ while not crashed:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_a or event.key == pygame.K_d:
                 pressedXcounter = 0
             if event.key == pygame.K_UP or event.key == pygame.K_DOWN or event.key == pygame.K_w or event.key == pygame.K_s:
+                throttlePressed = False
                 udpClient.sendPWM('thr',0)
             if event.key == pygame.K_h:
                 udpClient.sendPWM('horn',0)
@@ -179,6 +180,14 @@ while not crashed:
         if pressedXcounter > 1:   
             pressedXcounter = 0
             direction = direction_increase(direction)
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
+        if throttlePressed == False:
+            throttlePressed = True
+            throttle_increase()
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        if throttlePressed == False:
+            throttlePressed = True
+            throttle_decrease()
 
     pygame.time.wait(0)
     #pygame.display.update()
