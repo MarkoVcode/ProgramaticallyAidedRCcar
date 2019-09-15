@@ -5,6 +5,7 @@ import time
 import random
 import UDPIOClient
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -26,6 +27,9 @@ pygame.display.set_caption('Steer the Car')
 screen_rect = screen.get_rect()
 
 cam_list = pygame.camera.list_cameras()
+if os.environ.get('HOME') == '/home/pi':
+    cam_list = ['/dev/video2','/dev/video0']
+
 camBack  = None
 camFront = None
 if len(cam_list) >= 2:
