@@ -24,7 +24,7 @@ class HardwareStrategy:
        print "Hardware Init"
        
        self.pwm = Adafruit_PCA9685.PCA9685()
-       pwm.set_pwm_freq(60)
+       self.pwm.set_pwm_freq(60)
 	
     def executeIOInteraction(self, intId, instruction):
         instElems = instruction.split(":",)
@@ -33,9 +33,13 @@ class HardwareStrategy:
             if instElems[1] == "pwm":
                 #print "EXECUTE Adafruit_PCA9685.PCA9685"
                 if instElems[2] == 'dir':
-                    pwm.set_pwm(gameConfig.CAR_STEER_PWM_CHANNEL, 0, calculateServoPWMValue(instElems[3]))
+                    self.pwm.set_pwm(gameConfig.CAR_STEER_PWM_CHANNEL, 0, self.calculateServoPWMValue(instElems[3]))
+                    logging.debug(intId + ' EXECUTE I2C-PCA9685 STEER: ' + str(gameConfig.CAR_STEER_PWM_CHANNEL) 
+                              + ' Value: ' + str(self.calculateServoPWMValue(instElems[3])))
                 if instElems[2] == 'thr':
-                    pwm.set_pwm(gameConfig.CAR_THROTTLE_PWM_CHANNEL, 0, calculateThrottlePWMValue(instElems[3]))
+                    self.pwm.set_pwm(gameConfig.CAR_THROTTLE_PWM_CHANNEL, 0, self.calculateThrottlePWMValue(instElems[3]))
+                    logging.debug(intId + ' EXECUTE I2C-PCA9685 THROTTLE: ' + str(gameConfig.CAR_STEER_PWM_CHANNEL) 
+                              + ' Value: ' + str(self.calculateServoPWMValue(instElems[3])))
                 logging.debug(intId + ' EXECUTE I2C-PCA9685 Channel: ' + str(instElems[2]) 
                               + ' Value: ' + str(instElems[3]))
         elif instElems[0] == "gpio":
