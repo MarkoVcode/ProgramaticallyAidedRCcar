@@ -80,11 +80,11 @@ class HardwareStrategy:
             return 340
 
     def calculateThrottlePWMValue(self, requestedValue):
-        if requestedValue == 0:
+        if requestedValue == '0':
             return 350
-        elif requestedValue == 1:
+        elif requestedValue == '1':
             return 370
-        elif requestedValue == -1:
+        elif requestedValue == '-1':
             return 330
         else:
             return 350
