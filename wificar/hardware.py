@@ -2,7 +2,7 @@ import logging
 import random
 import string
 import gameConfig
-#import Adafruit_PCA9685
+import Adafruit_PCA9685
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -23,9 +23,8 @@ class HardwareStrategy:
        self.sensorCycle = [1, 0, 0]
        print "Hardware Init"
        
-       #pwm = Adafruit_PCA9685.PCA9685()
-       #pwm.set_pwm_freq(60)
-
+       self.pwm = Adafruit_PCA9685.PCA9685()
+       pwm.set_pwm_freq(60)
 	
     def executeIOInteraction(self, intId, instruction):
         instElems = instruction.split(":",)
@@ -33,9 +32,10 @@ class HardwareStrategy:
             #print "I2C message!"
             if instElems[1] == "pwm":
                 #print "EXECUTE Adafruit_PCA9685.PCA9685"
-                #convert to PWM values here
-                #pwm.set_pwm(3, 0, x_change)
-                #pwm.set_pwm(2, 0, y_change)
+                if instElems[2] == 'dir':
+                    pwm.set_pwm(gameConfig.CAR_STEER_PWM_CHANNEL, 0, calculateServoPWMValue(instElems[3]))
+                if instElems[2] == 'thr':
+                    pwm.set_pwm(gameConfig.CAR_THROTTLE_PWM_CHANNEL, 0, calculateThrottlePWMValue(instElems[3]))
                 logging.debug(intId + ' EXECUTE I2C-PCA9685 Channel: ' + str(instElems[2]) 
                               + ' Value: ' + str(instElems[3]))
         elif instElems[0] == "gpio":
@@ -48,6 +48,42 @@ class HardwareStrategy:
                               + ' Value: ' + str(instElems[3]))
         else:
             print "Message Unrecognized - IGNORE"
+
+    def calculateServoPWMValue(self, requestedValue):
+        if requestedValue == 0:
+            return 340
+        elif requestedValue == 1:
+            return 350
+        elif requestedValue == 2:
+            return 360
+        elif requestedValue == 3:
+            return 370
+        elif requestedValue == 4:
+            return 380
+        elif requestedValue == 5:
+            return 390
+        elif requestedValue == -1:
+            return 330
+        elif requestedValue == -2:
+            return 320
+        elif requestedValue == -3:
+            return 310
+        elif requestedValue == -4:
+            return 300
+        elif requestedValue == -5:
+            return 290
+        else:
+            return 340
+
+    def calculateThrottlePWMValue(self, requestedValue):
+        if requestedValue == 0:
+            return 350
+        elif requestedValue == 1:
+            return 370
+        elif requestedValue == -1:
+            return 330
+        else:
+            return 350
 
     def fetchSensors(self, selectedSensor):
         if selectedSensor == 'ALL':
