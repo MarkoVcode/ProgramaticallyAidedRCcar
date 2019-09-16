@@ -69,7 +69,7 @@ class OLEDdisplay:
         #draw.line((x, bottom, x+shape_width, top), fill=255)
         #draw.line((x, top, x+shape_width, bottom), fill=255)
         #x += shape_width+padding
-        x = 5
+        x = 15
         font = ImageFont.load_default()
         #font = ImageFont.truetype('Minecraftia.ttf', 8)
         #font = ImageFont.truetype('fonts/VCR_OSD_MONO_1.001.ttf', 10)
