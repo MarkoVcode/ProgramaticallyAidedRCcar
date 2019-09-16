@@ -137,15 +137,11 @@ class HardwareStrategy:
 
     def readSensorsGPS(self):
         self.sensors['gps'] = {"qqq":"dds"}
-        #print "Reading GPS"
 
     def readSensorsI2C(self):
         if gameConfig.isHardwareSupported():
             accelerometer_data = self.accelerometer.get_accel_data()
-            self.sensors['i2c'] = accelerometer_data
-        #else:
-        #    print "Reading I2C"
+            self.sensors['accel'] = accelerometer_data
 
     def readSensors1W(self):
         self.sensors['1w'] = ""
-        print "Reading 1W"

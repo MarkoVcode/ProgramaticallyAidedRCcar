@@ -72,10 +72,11 @@ class OLEDdisplay:
         x = 5
         #font = ImageFont.load_default()
         #font = ImageFont.truetype('Minecraftia.ttf', 8)
-        font = ImageFont.truetype('fonts/VCR_OSD_MONO_1.001.ttf', 10)
+        #font = ImageFont.truetype('fonts/VCR_OSD_MONO_1.001.ttf', 10)
+        font = ImageFont.truetype('fonts/PixelOperator.ttf', 10)
 
         draw.text((x, top),    text,  font=font, fill=255)
-        draw.text((x, top+20), 'World!', font=font, fill=255)
+        #draw.text((x, top+20), 'World!', font=font, fill=255)
 
         self.disp.image(image)
         self.disp.display()
