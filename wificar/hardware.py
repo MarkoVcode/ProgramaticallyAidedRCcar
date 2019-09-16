@@ -10,7 +10,7 @@ if gameConfig.isHardwareSupported():
     
     from mpu6050 import mpu6050
 
-    from .modules.i2cOLED_SSD1306 import OLEDdisplay
+    from i2cOLED_SSD1306 import OLEDdisplay
 
 
 logging.basicConfig(level=logging.DEBUG,
