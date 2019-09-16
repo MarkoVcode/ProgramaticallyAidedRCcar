@@ -108,11 +108,12 @@ draw.line((x, top, x+shape_width, bottom), fill=255)
 x += shape_width+padding
 
 # Load default font.
-font = ImageFont.load_default()
+#font = ImageFont.load_default()
 
 # Alternatively load a TTF font.  Make sure the .ttf font file is in the same directory as the python script!
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
 #font = ImageFont.truetype('Minecraftia.ttf', 8)
+font = ImageFont.truetype('VCR_OSD_MONO_1.001.ttf', 8)
 
 # Write two lines of text.
 draw.text((x, top),    'Hello',  font=font, fill=255)

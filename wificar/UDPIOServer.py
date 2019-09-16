@@ -8,7 +8,6 @@ import socket
 import sys
 import gameConfig
 import hardware
-from hardware import interactionID
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -62,7 +61,7 @@ class ConsumerThread(threading.Thread):
         while True:
             time.sleep(0.001)
             if not q.empty():
-                intId = interactionID()
+                intId = hw.interactionID()
                 item = q.get()
                 logging.debug(intId + ' Getting ' + str(item) 
                               + ' : ' + str(q.qsize()) + ' items in queue')
