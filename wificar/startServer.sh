@@ -1,3 +1,3 @@
 #!/bin/bash 
-
-./UDPIOServer.py & echo $! > server.pid
+./UDPIOServer.py
+# & echo $! > server.pid

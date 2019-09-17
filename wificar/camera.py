@@ -17,8 +17,7 @@ udpClient.sendLCD('IP', networkInfo.fetchIP())
 
 black = (0,0,0)
 white = (255,255,255)
-red = (255,0,0)
-RED_HIGHLIGHT = (240, 50, 50, 50)
+RED_HIGHLIGHT = (255, 255, 255, 20)
 
 clock = pygame.time.Clock()
 pygame.init() 
@@ -46,9 +45,9 @@ elif len(cam_list) == 1:
 else: 
     print("No cameras!!")
 
-see_through = pygame.Surface((100,100)).convert_alpha()
+see_through = pygame.Surface((300,300)).convert_alpha()
 see_through.fill(RED_HIGHLIGHT)
-see_through_rect = see_through.get_rect(bottomleft=screen_rect.center)
+see_through_rect = see_through.get_rect(center=screen_rect.center)
 
 pressedXcounter = 0
 throttlePressedCounter = 0
@@ -63,7 +62,7 @@ THR_FORWARD_MAX = 1
 THR_BACKWARD_MAX = -1
 
 def text_objects(text, font):
-    textSurface = font.render(text, True, black)
+    textSurface = font.render(text, True, white)
     return textSurface, textSurface.get_rect()
 
 def message_display(text):
@@ -71,11 +70,100 @@ def message_display(text):
     largeText = pygame.font.Font('fonts/PixelOperator.ttf',18)
     TextSurf, TextRect = text_objects(text, largeText)
     TextRect.center = ((640/2),(480/2))
-    blue = 0, 0, 255
-    point1 = 0, 0
-    point2 = 200, 100
-    pygame.draw.line(screen, blue, point1, point2)
     screen.blit(TextSurf, TextRect)
+
+
+def render_horizon_scale():
+    largeText = pygame.font.Font('fonts/PixelOperator.ttf',18)
+    blue = 255, 255, 255
+#Vertical Lines
+    point1 = 160, 120
+    point2 = 160, 360
+    pygame.draw.line(screen, blue, point1, point2)
+    point3 = 480, 120
+    point4 = 480, 360
+    pygame.draw.line(screen, blue, point3, point4)
+
+#Number Lines Left
+    point11 = 150, 120
+    point12 = 160, 120
+    pygame.draw.line(screen, blue, point11, point12)
+    point7 = 150, 240
+    point8 = 160, 240
+    pygame.draw.line(screen, blue, point7, point8)
+    point13 = 150, 360
+    point14 = 160, 360
+    pygame.draw.line(screen, blue, point13, point14)
+    point23 = 155, 180
+    point24 = 160, 180
+    pygame.draw.line(screen, blue, point23, point24)
+    point25 = 155, 300
+    point26 = 160, 300
+    pygame.draw.line(screen, blue, point25, point26)        
+
+#Number Lines Right
+    point15 = 480, 120
+    point16 = 490, 120
+    pygame.draw.line(screen, blue, point15, point16)
+    point9 = 480, 240
+    point10 = 490, 240
+    pygame.draw.line(screen, blue, point9, point10)
+    point17 = 480, 360
+    point18 = 490, 360
+    pygame.draw.line(screen, blue, point17, point18)
+    point19 = 480, 180
+    point20 = 485, 180
+    pygame.draw.line(screen, blue, point19, point20)
+    point21 = 480, 300
+    point22 = 485, 300
+    pygame.draw.line(screen, blue, point21, point22)
+
+#Numbers Left
+    TextSurfMaxL, TextRectMaxL = text_objects('180', largeText)
+    TextRectMaxL.center = (136,120)
+    TextSurfNeutralL, TextRectNeutralL = text_objects('0', largeText)
+    TextRectNeutralL.center = (140,240)
+    TextSurfMinL, TextRectMinL = text_objects('180', largeText)
+    TextRectMinL.center = (136,360)
+
+    screen.blit(TextSurfNeutralL, TextRectNeutralL)
+    screen.blit(TextSurfMaxL, TextRectMaxL)
+    screen.blit(TextSurfMinL, TextRectMinL)
+
+#Numbers Right
+    TextSurfMaxR, TextRectMaxR = text_objects('180', largeText)
+    TextRectMaxR.center = (504,120)
+    TextSurfNeutralR, TextRectNeutralR = text_objects('0', largeText)
+    TextRectNeutralR.center = (500,240)
+    TextSurfMinR, TextRectMinR = text_objects('180', largeText)
+    TextRectMinR.center = (504,360)
+
+    screen.blit(TextSurfNeutralR, TextRectNeutralR)
+    screen.blit(TextSurfMaxR, TextRectMaxR)
+    screen.blit(TextSurfMinR, TextRectMinR)
+
+    pygame.draw.circle(screen, (255,255,255), ((640/2),(480/2)), 2, 1)
+
+def render_horizon(x,y,z):
+    blue = 255, 255, 230
+    point5 = 180, 240
+    point6 = 460, 240
+    pygame.draw.line(screen, blue, point5, point6)
+
+def render_horizon_values(x,y,z):
+    xoffset = 330
+    yoffset = 100
+    largeText = pygame.font.Font('fonts/PixelOperator.ttf',17)
+    TextSurfx, TextRectx = text_objects('x:'+str(x), largeText)
+    TextRectx.center = (xoffset,yoffset)
+    TextSurfy, TextRecty = text_objects('y:'+str(y), largeText)
+    TextRecty.center = (xoffset,yoffset + 13)
+    TextSurfz, TextRectz = text_objects('z:'+str(z), largeText)
+    TextRectz.center = (xoffset,yoffset + 26)
+
+    screen.blit(TextSurfx, TextRectx)
+    screen.blit(TextSurfy, TextRecty)
+    screen.blit(TextSurfz, TextRectz)
 
 def direction_decrease(dirvalue):
     if dirvalue > DIR_MIN_POSITION:
@@ -116,8 +204,12 @@ def enable_hudRendering(hudr):
 
 def render_hud():
     sensors = udpClient.fetchSensors('ALL')
+    #print(sensors['accel'])
     screen.blit(see_through, see_through_rect)
-    message_display("Start")
+    render_horizon_scale()
+    render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
+    render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
+    #message_display(".")
 
 crashed = False
 

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import threading
+import os
 import time
 import logging
 import random
@@ -69,7 +70,14 @@ class ConsumerThread(threading.Thread):
             hw.readAllSensorsCycle()
         return
 
+def writePidFile():
+    pid = str(os.getpid())
+    f = open('server.pid', 'w')
+    f.write(pid)
+    f.close()
+
 if __name__ == '__main__':
+    writePidFile()
     p = ProducerThread(name='producer')
     c = ConsumerThread(name='consumer')
     p.start()
