@@ -208,7 +208,7 @@ def render_hud():
     screen.blit(see_through, see_through_rect)
     render_horizon_scale()
     render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
-    render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
+    render_horizon_values(sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
     #message_display(".")
 
 crashed = False
