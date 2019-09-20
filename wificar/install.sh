@@ -10,6 +10,9 @@ pip install -r requirements.txt
 #sudo pip install mpu6050-raspberrypi
 #sudo pip install adafruit-ads1x15 ADC
 
+https://stackoverflow.com/questions/43319199/how-to-loop-back-the-microphone-entry-directly-to-speakers-on-linux/43319706
+https://superuser.com/questions/87571/how-to-hear-mic-sound-over-speakers-ubuntu-karmic
+
 adafruit-pca9685
 Adafruit-SSD1306
 mpu6050-raspberrypi
@@ -27,3 +30,7 @@ sudo pip install adafruit-ads1x15
 (producer ) Returning sensors: {'accel': {'y': -1.7286135986328124, 'x': -9.311050256347656, 'z': 2.176329309082031}, '1w': '', 'gps': {'qqq': 'dds'}}
 (producer ) Awaiting for the messages. 0 items in queue
 (producer ) Returning sensors: {'accel': {'y': -1.6543933471679686, 'x': -9.074024291992187, 'z': 2.43250888671875}
+
+
+pactl list
+pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sound_Device-00.analog-mono | pacat -p --latency-msec=1

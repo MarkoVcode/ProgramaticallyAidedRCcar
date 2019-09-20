@@ -29,7 +29,7 @@ pygame.display.set_caption('Steer the Car')
 screen_rect = screen.get_rect()
 
 cam_list = pygame.camera.list_cameras()
-if os.environ.get('HOME') == '/home/pi':
+if gameConfig.isHardwareSupported():
     cam_list = ['/dev/video2','/dev/video0']
 
 camBack  = None
@@ -145,9 +145,30 @@ def render_horizon_scale():
     pygame.draw.circle(screen, (255,255,255), ((640/2),(480/2)), 2, 1)
 
 def render_horizon(x,y,z):
+    x = round(x) * 12
+    y = round(y) * 12
+
     blue = 255, 255, 230
-    point5 = 180, 240
-    point6 = 460, 240
+    #point5 = 180, (240 + y) +x
+    #point6 = 460, (240 - y) +x 
+    #vert
+    point5 = 320, 120
+    point6 = 320, 360
+    #flat
+    #point5 = 180, 240
+    #point6 = 460, 240
+    #maxl
+    #point5 = 180, 120
+    #point6 = 460, 360
+    #minr
+    #point5 = 180, 360
+    #point6 = 460, 120
+    #maxfr
+    #point5 = 180, 360
+    #point6 = 460, 360
+    #maxbk
+    #point5 = 180, 120
+    #point6 = 460, 120
     pygame.draw.line(screen, blue, point5, point6)
 
 def render_horizon_values(x,y,z):
@@ -207,8 +228,13 @@ def render_hud():
     #print(sensors['accel'])
     screen.blit(see_through, see_through_rect)
     render_horizon_scale()
-    render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
-    render_horizon_values(sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
+    if gameConfig.isHardwareSupported():
+        render_horizon(sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
+        render_horizon_values(sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
+    else:
+        render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
+        #render_horizon(-5,-5,0)
+        render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
     #message_display(".")
 
 crashed = False
