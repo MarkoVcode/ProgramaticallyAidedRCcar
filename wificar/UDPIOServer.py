@@ -36,7 +36,7 @@ class ProducerThread(threading.Thread):
     def run(self):
         while True:
             if self.firstRun:
-                systemNetworkInfo = "i2c:oled:msg:" + networkInfo.fetchNetworkData()
+                systemNetworkInfo = "i2c:oled:" + networkInfo.fetchNetworkData()
                 q.put(systemNetworkInfo)
                 logging.debug('Putting ' + str(systemNetworkInfo)  
                                 + ' : ' + str(q.qsize()) + ' items in queue')
