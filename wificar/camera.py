@@ -185,8 +185,8 @@ def render_horizon_values(x,y,z):
     screen.blit(TextSurfy, TextRecty)
     screen.blit(TextSurfz, TextRectz)
 
-def render_wheels(dirValue):
-    xoffset = -20
+def render_wheels(dirValue, throttleValue):
+    xoffset = -30
     yoffset = -200
     blue = 225, 255, 200
     point1 = 600+xoffset, 360+yoffset
@@ -198,8 +198,8 @@ def render_wheels(dirValue):
     point5 = 570+xoffset, 430+yoffset
     point6 = 630+xoffset, 430+yoffset
     pygame.draw.line(screen, blue, point5, point6, 3)
-    pygame.draw.circle(screen, blue, (600+xoffset,360+yoffset), 4, 1)
-    pygame.draw.circle(screen, blue, (600+xoffset,430+yoffset), 4, 1)
+    pygame.draw.circle(screen, blue, (600+xoffset,360+yoffset), 5, 1)
+    pygame.draw.circle(screen, blue, (600+xoffset,430+yoffset), 5, 1)
     #tyres front
     point9 = 570+dirValue+xoffset, 345+yoffset
     point10 = 570-dirValue+xoffset, 376+yoffset
@@ -214,6 +214,36 @@ def render_wheels(dirValue):
     point13 = 630+xoffset, 415+yoffset
     point14 = 630+xoffset, 446+yoffset
     pygame.draw.line(screen, blue, point13, point14, 12)
+    if dirValue == 0:
+        point15 = 583+xoffset, 360+yoffset
+        point16 = 617+xoffset, 360+yoffset
+        pygame.draw.line(screen, blue, point15, point16, 5)
+    if throttleValue > 0:
+        point17 = 583+xoffset, 350+yoffset
+        point18 = 600+xoffset, 340+yoffset
+        pygame.draw.line(screen, blue, point17, point18, 4)
+        point21 = 600+xoffset, 340+yoffset
+        point22 = 617+xoffset, 350+yoffset
+        pygame.draw.line(screen, blue, point21, point22, 4)
+        point23 = 583+xoffset, 340+yoffset
+        point24 = 600+xoffset, 330+yoffset
+        pygame.draw.line(screen, blue, point23, point24, 4)
+        point25 = 600+xoffset, 330+yoffset
+        point26 = 617+xoffset, 340+yoffset
+        pygame.draw.line(screen, blue, point25, point26, 4)
+    if throttleValue < 0:
+        point27 = 583+xoffset, 440+yoffset
+        point28 = 600+xoffset, 450+yoffset
+        pygame.draw.line(screen, blue, point27, point28, 4)
+        point29 = 600+xoffset, 450+yoffset
+        point30 = 617+xoffset, 440+yoffset
+        pygame.draw.line(screen, blue, point29, point30, 4)
+        point31 = 583+xoffset, 450+yoffset
+        point32 = 600+xoffset, 460+yoffset
+        pygame.draw.line(screen, blue, point31, point32, 4)
+        point33 = 600+xoffset, 460+yoffset
+        point34 = 617+xoffset, 450+yoffset
+        pygame.draw.line(screen, blue, point33, point34, 4)   
 
 def direction_decrease(dirvalue):
     if dirvalue > DIR_MIN_POSITION:
@@ -264,7 +294,7 @@ def render_hud():
         render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
         #render_horizon(-5,-5,0)
         render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
-    render_wheels(direction)
+    render_wheels(direction, throttle)
     #message_display(".")
 
 crashed = False
