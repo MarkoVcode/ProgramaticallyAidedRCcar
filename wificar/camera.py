@@ -22,6 +22,7 @@ RED_HIGHLIGHT = (255, 255, 255, 20)
 clock = pygame.time.Clock()
 pygame.init() 
 pygame.mixer.quit()  #performance work around - not needed normally
+pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
 pygame.camera.init()
 
 screen = pygame.display.set_mode((640,480),0)
@@ -144,8 +145,8 @@ def render_horizon_scale():
     pygame.draw.circle(screen, (255,255,255), ((640/2),(480/2)), 2, 1)
 
 def render_horizon(x,y,z):
-    x = round(x) * 12
-    y = round(y) * 12
+    x = round(x * 12)
+    y = round(y * 12)
 
     blue = 255, 255, 230
     point5 = 180, (240 + y) +x
