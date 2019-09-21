@@ -9,6 +9,8 @@ import networkInfo
 import os
 import gameConfig
 
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
+
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
                     
@@ -149,11 +151,11 @@ def render_horizon(x,y,z):
     y = round(y) * 12
 
     blue = 255, 255, 230
-    #point5 = 180, (240 + y) +x
-    #point6 = 460, (240 - y) +x 
+    point5 = 180, (240 + y) +x
+    point6 = 460, (240 - y) +x 
     #vert
-    point5 = 320, 120
-    point6 = 320, 360
+    #point5 = 320, 120
+    #point6 = 320, 360
     #flat
     #point5 = 180, 240
     #point6 = 460, 240
