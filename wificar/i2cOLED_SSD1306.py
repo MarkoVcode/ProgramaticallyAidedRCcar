@@ -78,7 +78,7 @@ class OLEDdisplay:
         textElems = text.split(";",)
         lineSpace = 0
         for i in textElems:
-            draw.text((1 + lineSpace, 15), i, font=font, fill=255)
+            draw.text((1, 15 + lineSpace), i, font=font, fill=255)
             lineSpace = lineSpace + 10
         #if textElems[0]:
         #    draw.text((x, 15),    textElems[0],  font=font, fill=255)
