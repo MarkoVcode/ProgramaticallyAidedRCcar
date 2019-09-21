@@ -185,6 +185,36 @@ def render_horizon_values(x,y,z):
     screen.blit(TextSurfy, TextRecty)
     screen.blit(TextSurfz, TextRectz)
 
+def render_wheels(dirValue):
+    xoffset = -20
+    yoffset = -200
+    blue = 225, 255, 200
+    point1 = 600+xoffset, 360+yoffset
+    point2 = 600+xoffset, 430+yoffset
+    pygame.draw.line(screen, blue, point1, point2, 3)
+    point3 = 570+xoffset, 360+yoffset
+    point4 = 630+xoffset, 360+yoffset
+    pygame.draw.line(screen, blue, point3, point4, 3)
+    point5 = 570+xoffset, 430+yoffset
+    point6 = 630+xoffset, 430+yoffset
+    pygame.draw.line(screen, blue, point5, point6, 3)
+    pygame.draw.circle(screen, blue, (600+xoffset,360+yoffset), 4, 1)
+    pygame.draw.circle(screen, blue, (600+xoffset,430+yoffset), 4, 1)
+    #tyres front
+    point9 = 570+dirValue+xoffset, 345+yoffset
+    point10 = 570-dirValue+xoffset, 376+yoffset
+    pygame.draw.line(screen, blue, point9, point10, 12)
+    point11 = 630+dirValue+xoffset, 345+yoffset
+    point12 = 630-dirValue+xoffset, 376+yoffset
+    pygame.draw.line(screen, blue, point11, point12, 12)
+    #tyres back
+    point7 = 570+xoffset, 415+yoffset
+    point8 = 570+xoffset, 446+yoffset
+    pygame.draw.line(screen, blue, point7, point8, 12)
+    point13 = 630+xoffset, 415+yoffset
+    point14 = 630+xoffset, 446+yoffset
+    pygame.draw.line(screen, blue, point13, point14, 12)
+
 def direction_decrease(dirvalue):
     if dirvalue > DIR_MIN_POSITION:
         dirvalue = dirvalue-1
@@ -234,6 +264,7 @@ def render_hud():
         render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
         #render_horizon(-5,-5,0)
         render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
+    render_wheels(direction)
     #message_display(".")
 
 crashed = False

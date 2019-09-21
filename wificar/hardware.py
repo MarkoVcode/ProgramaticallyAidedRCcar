@@ -58,7 +58,7 @@ class HardwareStrategy:
                               + ' Value: ' + str(instElems[3]))
             if instElems[1] == "oled":
                 if gameConfig.isHardwareSupported():
-                    self.oled.writeText(instElems[2] + instElems[3])
+                    self.oled.writeText(instElems[2])
         elif instElems[0] == "gpio":
             #print "GPIO message!"
             if instElems[1] == "pin":

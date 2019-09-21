@@ -4,7 +4,7 @@ import subprocess
 import gameConfig
 
 def fetchAP():
-    cmd =["nmcli -f SSID,ACTIVE,BARS dev wifi list | awk '$2 ~ /yes/ {print $3 \":\" $1}'"]
+    cmd =["nmcli -f SSID,ACTIVE,BARS dev wifi list | awk '$2 ~ /yes/ {print $3 \";\" $1}'"]
     address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     (out, err) = address.communicate()
     return out
@@ -13,7 +13,7 @@ def fetchAPR_Pi():
     cmd =["iwgetid"]
     address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     (out, err) = address.communicate()
-    return out
+    return out.replace(":", ";")
 
 def fetchIP():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -23,8 +23,8 @@ def fetchIP():
 
 def fetchNetworkData():
     if gameConfig.isHardwareSupported():
-        return fetchIP() + ":" + fetchAPR_Pi()
+        return fetchIP() + ";" + fetchAPR_Pi()
     else:
-        return fetchIP() + ":" + fetchAP()
+        return fetchIP() + ";" + fetchAP()
 
 #print fetchNetworkData()
