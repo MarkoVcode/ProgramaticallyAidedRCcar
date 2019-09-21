@@ -246,6 +246,24 @@ def render_wheels(dirValue, throttleValue):
         point34 = 617+xoffset, 450+yoffset
         pygame.draw.line(screen, blue, point33, point34, 4)   
 
+def render_electrical_metrics(battVoltage, rpiVoltage, rpiCurr, rpiStabTemp):
+    xoffset = 80
+    yoffset = 100
+    largeText = pygame.font.Font('fonts/PixelOperator.ttf',17)
+    TextSurfx, TextRectx = text_objects('Bat: ' + str(battVoltage) + 'V', largeText)
+    TextRectx.center = (xoffset,yoffset)
+    TextSurfy, TextRecty = text_objects('PI: ' + str(rpiVoltage) + 'V', largeText)
+    TextRecty.center = (xoffset,yoffset + 13)
+    TextSurfz, TextRectz = text_objects('PI: ' + str(rpiCurr) + 'A', largeText)
+    TextRectz.center = (xoffset,yoffset + 26)
+    TextSurfh, TextRecth = text_objects('PI: ' + str(rpiStabTemp) + 'C', largeText)
+    TextRecth.center = (xoffset,yoffset + 39)
+
+    screen.blit(TextSurfx, TextRectx)
+    screen.blit(TextSurfy, TextRecty)
+    screen.blit(TextSurfz, TextRectz)
+    screen.blit(TextSurfh, TextRecth)
+
 def direction_decrease(dirvalue):
     if dirvalue > DIR_MIN_POSITION:
         dirvalue = dirvalue-1
@@ -296,6 +314,7 @@ def render_hud():
         #render_horizon(-5,-5,0)
         render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
     render_wheels(direction, throttle)
+    render_electrical_metrics(8.40, 5.11, 3.21, 40)
     #message_display(".")
 
 crashed = False
