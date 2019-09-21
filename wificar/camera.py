@@ -72,7 +72,6 @@ def message_display(text):
     TextRect.center = ((640/2),(480/2))
     screen.blit(TextSurf, TextRect)
 
-
 def render_horizon_scale():
     largeText = pygame.font.Font('fonts/PixelOperator.ttf',18)
     blue = 255, 255, 255
