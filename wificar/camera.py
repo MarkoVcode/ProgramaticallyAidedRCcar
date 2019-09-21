@@ -263,6 +263,24 @@ def render_electrical_metrics(battVoltage, rpiVoltage, rpiCurr, rpiStabTemp):
     screen.blit(TextSurfy, TextRecty)
     screen.blit(TextSurfz, TextRectz)
     screen.blit(TextSurfh, TextRecth)
+    
+    blue = 225, 255, 200
+    point1 = 160, 10
+    point2 = 480, 10
+    pygame.draw.line(screen, blue, point1, point2, 6)
+    point3 = 160, 16
+    point4 = 480, 16
+    pygame.draw.line(screen, blue, point3, point4, 1)
+    point5 = 160, 5
+    point6 = 480, 5
+    pygame.draw.line(screen, blue, point5, point6, 1)
+
+    TextSurfpz, TextRectpz = text_objects('0', largeText)
+    TextRectpz.center = (150,11)
+    TextSurfpf, TextRectpf = text_objects('100%', largeText)
+    TextRectpf.center = (500,11)
+    screen.blit(TextSurfpz, TextRectpz)
+    screen.blit(TextSurfpf, TextRectpf)
 
 def direction_decrease(dirvalue):
     if dirvalue > DIR_MIN_POSITION:
