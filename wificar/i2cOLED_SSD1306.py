@@ -75,15 +75,15 @@ class OLEDdisplay:
         #font = ImageFont.truetype('fonts/VCR_OSD_MONO_1.001.ttf', 10)
         #font = ImageFont.truetype('fonts/PixelOperator.ttf', 14)
         #font = ImageFont.truetype('fonts/Retron2000.ttf', 14)
-        textElems = text.split(":",)
-        if textElems[0]:
-            draw.text((x, 15),    textElems[0],  font=font, fill=255)
-        if textElems[1]:
-            draw.text((x, 25),    textElems[1],  font=font, fill=255)
-        if textElems[2]:
-            draw.text((x, 35),    textElems[2],  font=font, fill=255) 
-        if textElems[3]:
-            draw.text((x, 45),    textElems[3],  font=font, fill=255)     
-
+        #textElems = text.split(":",)
+        #if textElems[0]:
+        #    draw.text((x, 15),    textElems[0],  font=font, fill=255)
+        #if textElems[1]:
+        #    draw.text((x, 25),    textElems[1],  font=font, fill=255)
+        #if textElems[2]:
+        #    draw.text((x, 35),    textElems[2],  font=font, fill=255) 
+        #if textElems[3]:
+        #    draw.text((x, 45),    textElems[3],  font=font, fill=255)     
+        draw.text((x, 15),    text,  font=font, fill=255)
         self.disp.image(image)
         self.disp.display()
