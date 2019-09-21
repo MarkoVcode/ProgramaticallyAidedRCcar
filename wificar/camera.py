@@ -5,17 +5,15 @@ import time
 import random
 import UDPIOClient
 import logging
-import networkInfo
 import os
 import gameConfig
 
-os.environ['SDL_AUDIODRIVER'] = 'dsp'
+os.environ['SDL_AUDIODRIVER'] = 'dsp' # alsa driver error issue
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
                     
 udpClient = UDPIOClient.UDPIOClient()
-udpClient.sendLCD('IP', networkInfo.fetchIP())
 
 black = (0,0,0)
 white = (255,255,255)

@@ -9,6 +9,7 @@ import socket
 import sys
 import gameConfig
 import hardware
+import networkInfo
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -30,9 +31,16 @@ class ProducerThread(threading.Thread):
         super(ProducerThread,self).__init__()
         self.target = target
         self.name = name
+        self.firstRun = True
 
     def run(self):
         while True:
+            if self.firstRun:
+                systemNetworkInfo = "i2c:oled:msg:" + networkInfo.fetchNetworkData()
+                q.put(systemNetworkInfo)
+                logging.debug('Putting ' + str(systemNetworkInfo)  
+                                + ' : ' + str(q.qsize()) + ' items in queue')
+                self.firstRun = False
             time.sleep(0.001)
             logging.debug('Awaiting for the messages. ' + str(q.qsize()) + ' items in queue')
             data, address = sock.recvfrom(4096)
