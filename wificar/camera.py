@@ -31,7 +31,7 @@ screen_rect = screen.get_rect()
 
 cam_list = pygame.camera.list_cameras()
 if gameConfig.isHardwareSupported():
-    cam_list = ['/dev/video2','/dev/video0']
+    cam_list = ['/dev/camerafront','/dev/cameraback']
 
 camBack  = None
 camFront = None
@@ -256,7 +256,7 @@ def render_electrical_metrics(battVoltage, rpiVoltage, rpiCurr, rpiStabTemp):
     TextRecty.center = (xoffset,yoffset + 13)
     TextSurfz, TextRectz = text_objects('PI: ' + str(rpiCurr) + 'A', largeText)
     TextRectz.center = (xoffset,yoffset + 26)
-    TextSurfh, TextRecth = text_objects('PI: ' + str(rpiStabTemp) + 'C', largeText)
+    TextSurfh, TextRecth = text_objects('PI core: ' + str(rpiStabTemp) + '°C', largeText)
     TextRecth.center = (xoffset,yoffset + 39)
 
     screen.blit(TextSurfx, TextRectx)
@@ -332,7 +332,7 @@ def render_hud():
         #render_horizon(-5,-5,0)
         render_horizon_values(-1.7860744384765623,-9.016563452148437,2.205059729003906)
     render_wheels(direction, throttle)
-    render_electrical_metrics(8.40, 5.11, 3.21, 40)
+    render_electrical_metrics(8.40, 5.11, 3.21, sensors['system']['core_temp'])
     #message_display(".")
 
 crashed = False

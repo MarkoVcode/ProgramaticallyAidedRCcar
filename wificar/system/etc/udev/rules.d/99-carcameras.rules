@@ -1,0 +1,2 @@
+ATTR{name}=="camera0", SYMLINK+="camerafront"
+ATTR{name}=="USB 2.0 PC Cam", SYMLINK+="cameraback"

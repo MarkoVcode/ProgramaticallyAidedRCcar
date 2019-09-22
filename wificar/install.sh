@@ -31,6 +31,18 @@ sudo pip install adafruit-ads1x15
 (producer ) Awaiting for the messages. 0 items in queue
 (producer ) Returning sensors: {'accel': {'y': -1.6543933471679686, 'x': -9.074024291992187, 'z': 2.43250888671875}
 
+wireless:
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 
 pactl list
 pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sound_Device-00.analog-mono | pacat -p --latency-msec=1
+
+core temperature
+ vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'
+
+permanent dev assingment
+ https://unix.stackexchange.com/questions/77170/how-to-bind-v4l2-usb-cameras-to-the-same-device-names-even-after-reboot
+ 1)
+ sudo udevadm info --query=all --name=/dev/video2
+ 2)
+ sudo udevadm info -ap /devices/virtual/video4linux/video2

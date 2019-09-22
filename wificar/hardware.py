@@ -4,6 +4,7 @@ import string
 import gameConfig
 import os
 import time
+import subprocess
 
 if gameConfig.isHardwareSupported():
     import Adafruit_PCA9685
@@ -126,6 +127,7 @@ class HardwareStrategy:
             return
         elif self.sensorCycle[1] == 1:
             self.readSensorsI2C()
+            self.readSystemMetrix()
             self.sensorCycle[1] = 0
             self.sensorCycle[2] = 1
             return            
@@ -142,6 +144,13 @@ class HardwareStrategy:
         if gameConfig.isHardwareSupported():
             accelerometer_data = self.accelerometer.get_accel_data()
             self.sensors['accel'] = accelerometer_data
+    
+    def readSystemMetrix(self):
+        if gameConfig.isHardwareSupported():
+            cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'"]
+            address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+            (out, err) = address.communicate()
+            self.sensors['system'] = {"core_temp":out}
 
     def readSensors1W(self):
         self.sensors['1w'] = ""
