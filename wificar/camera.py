@@ -256,7 +256,7 @@ def render_electrical_metrics(battVoltage, rpiVoltage, rpiCurr, rpiStabTemp):
     TextRecty.center = (xoffset,yoffset + 13)
     TextSurfz, TextRectz = text_objects('PI: ' + str(rpiCurr) + 'A', largeText)
     TextRectz.center = (xoffset,yoffset + 26)
-    TextSurfh, TextRecth = text_objects('PI core: ' + str(rpiStabTemp) + '°C', largeText)
+    TextSurfh, TextRecth = text_objects('PI core: ' + str(rpiStabTemp) + 'C', largeText)
     TextRecth.center = (xoffset,yoffset + 39)
 
     screen.blit(TextSurfx, TextRectx)
