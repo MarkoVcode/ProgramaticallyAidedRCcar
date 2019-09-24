@@ -19,30 +19,16 @@ mpu6050-raspberrypi
 
 sudo pip install adafruit-ads1x15
 
-{'y': -1.7812860351562498, 'x': -9.009380847167968, 'z': 2.2002713256835937}, '1w': '', 'gps': {'qqq': 'dds'}}
-(producer ) Awaiting for the messages. 0 items in queue
-(producer ) Returning sensors: {'accel': {'y': -1.7860744384765623, 'x': -9.016563452148437, 'z': 2.205059729003906}, '1w': '', 'gps': {'qqq': 'dds'}}
-(producer ) Awaiting for the messages. 0 items in queue
-(producer ) Returning sensors: {'accel': {'y': -1.7573440185546874, 'x': -9.368511096191405, 'z': 2.3151930053710936}, '1w': '', 'gps': {'qqq': 'dds'}}
-(producer ) Awaiting for the messages. 0 items in queue
-(producer ) Returning sensors: {'accel': {'y': -1.7094599853515624, 'x': -9.306261853027344, 'z': 2.4253262817382812}, '1w': '', 'gps': {'qqq': 'dds'}}
-(producer ) Awaiting for the messages. 0 items in queue
-(producer ) Returning sensors: {'accel': {'y': -1.7286135986328124, 'x': -9.311050256347656, 'z': 2.176329309082031}, '1w': '', 'gps': {'qqq': 'dds'}}
-(producer ) Awaiting for the messages. 0 items in queue
-(producer ) Returning sensors: {'accel': {'y': -1.6543933471679686, 'x': -9.074024291992187, 'z': 2.43250888671875}
-
-wireless:
-sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
-
+#audio config
 pactl list
 pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sound_Device-00.analog-mono | pacat -p --latency-msec=1
 
-core temperature
- vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'
+#wireless config:
+#sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 
-permanent dev assingment
- https://unix.stackexchange.com/questions/77170/how-to-bind-v4l2-usb-cameras-to-the-same-device-names-even-after-reboot
- 1)
- sudo udevadm info --query=all --name=/dev/video2
- 2)
- sudo udevadm info -ap /devices/virtual/video4linux/video2
+#permanent dev assingment or cameras
+# https://unix.stackexchange.com/questions/77170/how-to-bind-v4l2-usb-cameras-to-the-same-device-names-even-after-reboot
+# 1)
+# sudo udevadm info --query=all --name=/dev/video2
+# 2)
+# sudo udevadm info -ap /devices/virtual/video4linux/video2

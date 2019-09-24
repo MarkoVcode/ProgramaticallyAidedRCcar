@@ -1,18 +1,15 @@
 import logging
 import random
 import string
-import gameConfig
 import os
 import time
 import subprocess
+import cc_configuration
 
-if gameConfig.isHardwareSupported():
+if cc_configuration.isHardwareSupported():
     import Adafruit_PCA9685
-    
     from mpu6050 import mpu6050
-
     from i2cOLED_SSD1306 import OLEDdisplay
-
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -22,13 +19,13 @@ logging.basicConfig(level=logging.DEBUG,
 READ_SENSORS_CYCLE_SKIP = 4000000
 
 # define a class
-class HardwareStrategy:
+class cc_sensors:
     def __init__(self):
        self.read_sensor_cycle_timer = 0
        self.sensors = {}
        self.sensorCycle = [1, 0, 0]
        print "Hardware Init"
-       if gameConfig.isHardwareSupported():
+       if cc_configuration.isHardwareSupported():
            self.pwm = Adafruit_PCA9685.PCA9685()
            self.pwm.set_pwm_freq(60)
            #init oled here
@@ -46,19 +43,19 @@ class HardwareStrategy:
             if instElems[1] == "pwm":
                 #print "EXECUTE Adafruit_PCA9685.PCA9685"
                 if instElems[2] == 'dir':
-                    if gameConfig.isHardwareSupported():
-                        self.pwm.set_pwm(gameConfig.CAR_STEER_PWM_CHANNEL, 0, self.calculateServoPWMValue(instElems[3]))
-                    logging.debug(intId + ' EXECUTE I2C-PCA9685 STEER: ' + str(gameConfig.CAR_STEER_PWM_CHANNEL) 
+                    if cc_configuration.isHardwareSupported():
+                        self.pwm.set_pwm(cc_configuration.CAR_STEER_PWM_CHANNEL, 0, self.calculateServoPWMValue(instElems[3]))
+                    logging.debug(intId + ' EXECUTE I2C-PCA9685 STEER: ' + str(cc_configuration.CAR_STEER_PWM_CHANNEL) 
                               + ' Value: ' + str(self.calculateServoPWMValue(instElems[3])))
                 if instElems[2] == 'thr':
-                    if gameConfig.isHardwareSupported():
-                        self.pwm.set_pwm(gameConfig.CAR_THROTTLE_PWM_CHANNEL, 0, self.calculateThrottlePWMValue(instElems[3]))
-                    logging.debug(intId + ' EXECUTE I2C-PCA9685 THROTTLE: ' + str(gameConfig.CAR_STEER_PWM_CHANNEL) 
+                    if cc_configuration.isHardwareSupported():
+                        self.pwm.set_pwm(cc_configuration.CAR_THROTTLE_PWM_CHANNEL, 0, self.calculateThrottlePWMValue(instElems[3]))
+                    logging.debug(intId + ' EXECUTE I2C-PCA9685 THROTTLE: ' + str(cc_configuration.CAR_STEER_PWM_CHANNEL) 
                               + ' Value: ' + str(self.calculateServoPWMValue(instElems[3])))
                 logging.debug(intId + ' EXECUTE I2C-PCA9685 Channel: ' + str(instElems[2]) 
                               + ' Value: ' + str(instElems[3]))
             if instElems[1] == "oled":
-                if gameConfig.isHardwareSupported():
+                if cc_configuration.isHardwareSupported():
                     self.oled.writeText(instElems[2])
         elif instElems[0] == "gpio":
             #print "GPIO message!"
@@ -72,6 +69,7 @@ class HardwareStrategy:
             print "Message Unrecognized - IGNORE"
 
     def calculateServoPWMValue(self, requestedValue):
+        #it is prepared to model non-linear progression here
         if requestedValue == '0':
             return 340
         elif requestedValue == '1':
@@ -115,7 +113,7 @@ class HardwareStrategy:
 
     def readAllSensorsCycle(self):
         milli_sec = int(round(time.time() * 1000))
-        if milli_sec - gameConfig.UPDATE_SENSORS_EVERY_MS > self.read_sensor_cycle_timer:
+        if milli_sec - cc_configuration.UPDATE_SENSORS_EVERY_MS > self.read_sensor_cycle_timer:
             self.cycleSensorsRead()
             self.read_sensor_cycle_timer = milli_sec
 
@@ -138,19 +136,31 @@ class HardwareStrategy:
             return              
 
     def readSensorsGPS(self):
-        self.sensors['gps'] = {"qqq":"dds"}
+        if cc_configuration.isHardwareSupported():
+            self.sensors['gps'] = {"qqq":"dds"}
+        else:
+            self.sensors['gps'] = {"qqq":"dds"}
 
     def readSensorsI2C(self):
-        if gameConfig.isHardwareSupported():
+        if cc_configuration.isHardwareSupported():
             accelerometer_data = self.accelerometer.get_accel_data()
             self.sensors['accel'] = accelerometer_data
-    
+            self.sensors['power'] = {"battery_volt":18.1, "pi_volt":5.1, "pi_current": 3}
+        else:
+            self.sensors['accel'] = {'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906}
+            self.sensors['power'] = {"battery_volt":18.1, "pi_volt":5.1, "pi_current": 3}
+
     def readSystemMetrix(self):
-        if gameConfig.isHardwareSupported():
+        if cc_configuration.isHardwareSupported():
             cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'"]
             address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
             (out, err) = address.communicate()
             self.sensors['system'] = {"core_temp":out}
+        else:
+            self.sensors['system'] = {"core_temp":33}
 
     def readSensors1W(self):
-        self.sensors['1w'] = ""
+        if cc_configuration.isHardwareSupported():
+            self.sensors['1w'] = ""
+        else:
+            self.sensors['1w'] = {'sensor1': 23}

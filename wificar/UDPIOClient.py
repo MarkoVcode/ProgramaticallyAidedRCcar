@@ -67,8 +67,9 @@ class UDPIOClient:
 if __name__ == '__main__':
     p = UDPIOClient()
    # p.dispatch(message)
+    print(__name__)
     sensors = p.fetchSensors("ALL")
-    print(sensors["gps"]["qqq"])
+    print(sensors)
    # p.sendGPIOPIN('ls1',0)
    # p.sendPWM('dir', 2)
    # p.sendLCD('msg','my message')

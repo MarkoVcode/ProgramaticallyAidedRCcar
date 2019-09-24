@@ -7,9 +7,10 @@ import random
 import Queue
 import socket
 import sys
-import gameConfig
-import hardware
-import networkInfo
+
+import lib.cc_configuration as gameConfig
+from lib.cc_wifi import cc_wifi
+from lib.cc_sensors import cc_sensors
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -20,7 +21,8 @@ sock.bind(server_address)
 
 logging.debug('Starting up on %s port %s' % server_address)
 
-hw = hardware.HardwareStrategy()
+networkInfo = cc_wifi()
+hw = cc_sensors()
 
 BUF_SIZE = 20
 q = Queue.Queue(BUF_SIZE)
