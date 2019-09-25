@@ -9,7 +9,7 @@ import cc_configuration
 if cc_configuration.isHardwareSupported():
     import Adafruit_PCA9685
     from mpu6050 import mpu6050
-    import cc_i2c_oled_SSD1306 as OLEDdisplay
+    from cc_i2c_oled_SSD1306 import cc_i2c_oled_SSD1306
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -29,7 +29,7 @@ class cc_sensors:
            self.pwm = Adafruit_PCA9685.PCA9685()
            self.pwm.set_pwm_freq(60)
            #init oled here
-           self.oled = OLEDdisplay()
+           self.oled = cc_i2c_oled_SSD1306()
            self.accelerometer = mpu6050(0x68)
 
     def interactionID(self, stringLength=5):
