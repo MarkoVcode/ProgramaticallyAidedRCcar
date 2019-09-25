@@ -17,6 +17,7 @@ class cc_wifi:
         return out.replace(":", ";")
 
     def fetchIP(self):
+        # catch here to avoid server start issues
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(('arduino.cc', 0))
         address=s.getsockname()[0]

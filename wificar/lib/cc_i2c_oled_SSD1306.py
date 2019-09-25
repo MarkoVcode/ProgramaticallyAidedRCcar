@@ -11,7 +11,7 @@ from PIL import ImageFont
 RST = 24
 
 # define a class
-class OLEDdisplay:
+class cc_i2c_oled_SSD1306:
     def __init__(self):
         # 128x32 display with hardware I2C:
         #disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
@@ -48,46 +48,12 @@ class OLEDdisplay:
         # Draw a black filled box to clear the image.
         draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-        # Draw some shapes.
-        # First define some constants to allow easy resizing of shapes.
-        #padding = 2
-        #shape_width = 20
-        #top = padding
-        #bottom = height-padding
-        # Move left to right keeping track of the current x position for drawing shapes.
-        #x = padding
-        # Draw an ellipse.
-        #draw.ellipse((x, top , x+shape_width, bottom), outline=255, fill=0)
-        #x += shape_width+padding
-        # Draw a rectangle.
-        #draw.rectangle((x, top, x+shape_width, bottom), outline=255, fill=0)
-        #x += shape_width+padding
-        # Draw a triangle.
-        #draw.polygon([(x, bottom), (x+shape_width/2, top), (x+shape_width, bottom)], outline=255, fill=0)
-        #x += shape_width+padding
-        # Draw an X.
-        #draw.line((x, bottom, x+shape_width, top), fill=255)
-        #draw.line((x, top, x+shape_width, bottom), fill=255)
-        #x += shape_width+padding
-        #x = 2
         font = ImageFont.load_default()
         #font = ImageFont.truetype('Minecraftia.ttf', 8)
-        #font = ImageFont.truetype('fonts/VCR_OSD_MONO_1.001.ttf', 10)
-        #font = ImageFont.truetype('fonts/PixelOperator.ttf', 14)
-        #font = ImageFont.truetype('fonts/Retron2000.ttf', 14)
         textElems = text.split(";",)
         lineSpace = 0
         for i in textElems:
             draw.text((1, 15 + lineSpace), i, font=font, fill=255)
             lineSpace = lineSpace + 10
-        #if textElems[0]:
-        #    draw.text((x, 15),    textElems[0],  font=font, fill=255)
-        #if textElems[1]:
-        #    draw.text((x, 25),    textElems[1],  font=font, fill=255)
-        #if textElems[2]:
-        #    draw.text((x, 35),    textElems[2],  font=font, fill=255) 
-        #if textElems[3]:
-        #    draw.text((x, 45),    textElems[3],  font=font, fill=255)     
-        #draw.text((x, 15),    text,  font=font, fill=255)
         self.disp.image(image)
         self.disp.display()

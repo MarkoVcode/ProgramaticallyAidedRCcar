@@ -40,6 +40,7 @@ class cc_udpclient:
     def __init__(self):
        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
        self.server_address = (cc_configuration.UDP_SERVER_ADDRESS, cc_configuration.UDP_SERVER_PORT)
+       self.connected = True
 	
     def sendPWM(self, channel, value):
         message = UDP_MESSAGE_PREFIX_I2C_PWM + str(channel) + ':' + str(value)
@@ -56,13 +57,25 @@ class cc_udpclient:
     def fetchSensors(self, sensor):
         message = UDP_MESSAGE_PREFIX_SENSOR_READ + str(sensor)
         responseString = self.dispatch(message)
-        jsonAcceptableString = responseString.replace("'", "\"")
-        return json.loads(jsonAcceptableString)
+        if responseString:
+            jsonAcceptableString = responseString.replace("'", "\"")
+            return json.loads(jsonAcceptableString)
+        else:
+            return cc_configuration.SENSORS_FOR_FAILED_CONNECTION
 
     def dispatch(self, message):
-        sent = self.sock.sendto(message, self.server_address)
-        data, server = self.sock.recvfrom(4096)
+        data = None
+        try:
+            self.sock.settimeout(0.1)
+            sent = self.sock.sendto(message, self.server_address)
+            data, server = self.sock.recvfrom(4096)
+            self.connected = True
+        except:
+            self.connected = False
         return data
+    
+    def isConnectionAlive(self):
+        return self.connected
 
 if __name__ == '__main__':
     p = cc_udpclient()

@@ -9,7 +9,7 @@ import cc_configuration
 if cc_configuration.isHardwareSupported():
     import Adafruit_PCA9685
     from mpu6050 import mpu6050
-    from i2cOLED_SSD1306 import OLEDdisplay
+    import cc_i2c_oled_SSD1306 as OLEDdisplay
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)

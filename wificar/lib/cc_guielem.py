@@ -69,7 +69,7 @@ class cc_guielem:
         self.gtext.modelText(500, 240, '0')
         self.gtext.modelText(504, 360, '180')
 
-        pygame.draw.circle(self.screen, (255,255,255), ((640/2),(480/2)), 2, 1)
+        pygame.draw.circle(self.screen, (255,255,255), ((640/2),(480/2)), 2, 2)
     
     def modelHorizonLine(self, x, y, ax, ay, az):
         ax = round(ax * 12)
@@ -96,8 +96,8 @@ class cc_guielem:
         point5 = 570+xoffset, 430+yoffset
         point6 = 630+xoffset, 430+yoffset
         pygame.draw.line(self.screen, blue, point5, point6, 3)
-        pygame.draw.circle(self.screen, blue, (600+xoffset,360+yoffset), 5, 1)
-        pygame.draw.circle(self.screen, blue, (600+xoffset,430+yoffset), 5, 1)
+        pygame.draw.circle(self.screen, blue, (600+xoffset,360+yoffset), 5, 5)
+        pygame.draw.circle(self.screen, blue, (600+xoffset,430+yoffset), 5, 5)
         #tyres front
         point9 = 570+dirValue+xoffset, 345+yoffset
         point10 = 570-dirValue+xoffset, 376+yoffset
