@@ -36,7 +36,7 @@ class cc_i2c_adc_ADS1115:
             if i == 1:
                 valuesCalculated[i] = round(((PI_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]),1)
             if i == 2:
-                valuesCalculated[i] = round(((PI_CURRENT_RANGE / ADC_RESOLUTION) * values[i]),1)   #here convert to Amps
+                valuesCalculated[i] = (PI_CURRENT_RANGE / ADC_RESOLUTION) * values[i]   #here convert to Amps
             if i == 3:
                 valuesCalculated[i] = values[i]
         return valuesCalculated
