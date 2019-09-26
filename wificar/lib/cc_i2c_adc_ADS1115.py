@@ -26,7 +26,7 @@ class cc_i2c_adc_ADS1115:
 
     def get_power_data(self):
         values = self.getValues()
-        return {"battery_volt": values[0], "pi_volt": values[1], "pi_current": values[2]}
+        return {"battery_volt": round(values[0],1), "pi_volt": round(values[1],1), "pi_current": round(values[2],1)}
     
     def getValues(self):
         values = [0]*4
