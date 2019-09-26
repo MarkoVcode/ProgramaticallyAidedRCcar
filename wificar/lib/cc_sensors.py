@@ -32,6 +32,7 @@ class cc_sensors:
            #init oled here
            self.oled = cc_i2c_oled_SSD1306()
            self.accelerometer = mpu6050(0x68)
+           self.power = cc_i2c_adc_ADS1115()
 
     def interactionID(self, stringLength=5):
         letters = string.ascii_lowercase
