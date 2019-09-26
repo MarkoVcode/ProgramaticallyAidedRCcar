@@ -7,8 +7,6 @@ PI_VOLTAGE_RANGE = 6.144 * 2       #gain 2/3
 PI_CURRENT_RANGE = 0.512 * 2    #gain 8
 BATTERY_VOLTAGE_DIVIDER_RATIO = 2.54777070063694
 
-val = ((BATTERY_VOLTAGE_RANGE / ADC_RESOLUTION) * 28280 ) * BATTERY_VOLTAGE_DIVIDER_RATIO
-
 # Choose a gain of 1 for reading voltages from 0 to 4.09V.
 # Or pick a different gain to change the range of voltages that are read:
 #  - 2/3 = +/-6.144V
@@ -28,7 +26,7 @@ class cc_i2c_adc_ADS1115:
         values = self.getValues()
         print("sss")
         print(values)
-        return {"battery_volt": round(values[0],1), "pi_volt": round(values[1],1), "pi_current": round(values[2],1)}
+        return {"battery_volt": values[0], "pi_volt": values[1], "pi_current": values[2]}
     
     def getValues(self):
         values = [0]*4
@@ -41,6 +39,6 @@ class cc_i2c_adc_ADS1115:
                 valuesCalculated[i] = (PI_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]
             if i == 2:
                 valuesCalculated[i] = (PI_CURRENT_RANGE / ADC_RESOLUTION) * values[i]   #here convert to Amps
-            else:
+            if i == 3:
                 valuesCalculated[i] = values[i]
         return valuesCalculated
