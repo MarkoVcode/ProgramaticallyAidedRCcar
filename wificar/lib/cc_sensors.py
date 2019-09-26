@@ -148,6 +148,7 @@ class cc_sensors:
         if cc_configuration.isHardwareSupported():
             accelerometer_data = self.accelerometer.get_accel_data()
             power_data = self.power.get_power_data()
+            print(power_data)
             self.sensors['accel'] = accelerometer_data
             self.sensors['power'] = power_data
         else:

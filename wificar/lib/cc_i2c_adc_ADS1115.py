@@ -26,6 +26,8 @@ class cc_i2c_adc_ADS1115:
 
     def get_power_data(self):
         values = self.getValues()
+        print("sss")
+        print(values)
         return {"battery_volt": round(values[0],1), "pi_volt": round(values[1],1), "pi_current": round(values[2],1)}
     
     def getValues(self):
@@ -34,7 +36,7 @@ class cc_i2c_adc_ADS1115:
         for i in range(4):
             values[i] = self.adc.read_adc(i, gain=GAIN[i])
             if i == 0:
-                valuesCalculated[i] = ((BATTERY_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i] ) * BATTERY_VOLTAGE_DIVIDER_RATIO
+                valuesCalculated[i] = round((((BATTERY_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i] ) * BATTERY_VOLTAGE_DIVIDER_RATIO),1)
             if i == 1:
                 valuesCalculated[i] = (PI_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]
             if i == 2:
