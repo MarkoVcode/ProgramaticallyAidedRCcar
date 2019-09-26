@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import pygame
 import pygame.camera
@@ -33,17 +34,19 @@ guiElem = cc_guielem(screen)
 cameras = cc_cameras(screen)
 control = cc_control(udpClient)
 
-
-
 def render_hud():
     sensors = udpClient.fetchSensors('ALL')
     guiElem.modelHorizonScale(1,2)
-    guiElem.modelWheelsState(1, 2, control.getDirection(), control.getThrottle())
-    guiElem.modelBatteryLevel(150, 5, 8.40)
     if udpClient.isConnectionAlive():
-        guiElem.modelHorizonLine(180, 240, sensors['accel']['x'], sensors['accel']['y'], sensors['accel']['z'])
-        guiElem.modelHorizonValues(330, 100, sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
-        guiElem.modelGeneralMetrics(80, 100, 8.40, 5.11, 3.21, sensors['system']['core_temp'])
+        guiElem.modelWheelsState(1, 2, control.getDirection(), control.getThrottle())
+        if 'accel' in sensors.keys():
+            guiElem.modelHorizonLine(180, 240, sensors['accel']['x'], sensors['accel']['y'], sensors['accel']['z'])
+            guiElem.modelHorizonValues(330, 100, sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
+        if 'power' in sensors.keys():
+            guiElem.modelPowerMetrics(80, 100, sensors['power']['battery_volt'], sensors['power']['pi_volt'], sensors['power']['pi_current'])
+            guiElem.modelBatteryLevel(150, 5, 330, sensors['power']['battery_volt'], gameConfig.BATTERY_VOLTAGE_MIN, gameConfig.BATTERY_VOLTAGE_MAX, gameConfig.BATTERY_VOLTAGE_WARN, gameConfig.BATTERY_VOLTAGE_CRIT)
+        if 'system' in sensors.keys():
+            guiElem.modelSystemMetrics(80, 140, sensors['system']['core_temp'])
        #guiElem.modelHorizonLine(180, 240, 0, 0, 0)
        #render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
 

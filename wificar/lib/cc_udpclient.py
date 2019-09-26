@@ -61,7 +61,7 @@ class cc_udpclient:
             jsonAcceptableString = responseString.replace("'", "\"")
             return json.loads(jsonAcceptableString)
         else:
-            return cc_configuration.SENSORS_FOR_FAILED_CONNECTION
+            return {}
 
     def dispatch(self, message):
         data = None

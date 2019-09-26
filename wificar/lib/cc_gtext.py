@@ -20,7 +20,8 @@ class cc_gtext:
         self.screen.blit(TextSurf, TextRect)
 
     def modelVarSizeText(self, x, y, text, size):
-        TextSurf, TextRect = self.text_objects(text, self.warningFont, COLOUR_RED)
+        font = pygame.font.Font('fonts/Retron2000.ttf',size)
+        TextSurf, TextRect = self.text_objects(text, font, COLOUR_RED)
         TextRect.center = (x,y)
         self.screen.blit(TextSurf, TextRect)        
 

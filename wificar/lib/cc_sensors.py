@@ -10,6 +10,7 @@ if cc_configuration.isHardwareSupported():
     import Adafruit_PCA9685
     from mpu6050 import mpu6050
     from cc_i2c_oled_SSD1306 import cc_i2c_oled_SSD1306
+    from cc_i2c_adc_ADS1115 import cc_i2c_adc_ADS1115
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -131,6 +132,7 @@ class cc_sensors:
             return            
         elif self.sensorCycle[2] == 1:                
             self.readSensors1W()
+            self.readSensorsProximity()
             self.sensorCycle[2] = 0
             self.sensorCycle[0] = 1
             return              
@@ -144,11 +146,12 @@ class cc_sensors:
     def readSensorsI2C(self):
         if cc_configuration.isHardwareSupported():
             accelerometer_data = self.accelerometer.get_accel_data()
+            power_data = self.power.get_power_data()
             self.sensors['accel'] = accelerometer_data
-            self.sensors['power'] = {"battery_volt":18.1, "pi_volt":5.1, "pi_current": 3}
+            self.sensors['power'] = power_data
         else:
             self.sensors['accel'] = {'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906}
-            self.sensors['power'] = {"battery_volt":18.1, "pi_volt":5.1, "pi_current": 3}
+            self.sensors['power'] = {"battery_volt":7.0, "pi_volt":5.1, "pi_current": 3}
 
     def readSystemMetrix(self):
         if cc_configuration.isHardwareSupported():
@@ -164,3 +167,9 @@ class cc_sensors:
             self.sensors['1w'] = ""
         else:
             self.sensors['1w'] = {'sensor1': 23}
+        
+    def readSensorsProximity(self):
+        if cc_configuration.isHardwareSupported():
+            self.sensors['proxi'] = {'A': 23}
+        else:
+            self.sensors['proxi'] = {'A': 23}

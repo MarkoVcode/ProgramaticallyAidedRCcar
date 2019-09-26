@@ -3,6 +3,8 @@ from cc_gtext import cc_gtext
 
 COLOUR_WHITE = (255, 255, 255)
 COLOUR_CREAM = (225, 255, 200)
+COLOUR_ORANGE = (252, 202, 3)
+COLOUR_RED = (252, 29, 25)
 
 HIGHLIGHT_HORIZON = (255, 255, 255, 20)
 
@@ -143,24 +145,39 @@ class cc_guielem:
             point34 = 617+xoffset, 450+yoffset
             pygame.draw.line(self.screen, blue, point33, point34, 4) 
 
-    def modelGeneralMetrics(self, x, y, batteryVolt, rpiVoltage, rpiCurr, rpiStabTemp):      
+    def modelPowerMetrics(self, x, y, batteryVolt, rpiVoltage, rpiCurr):      
         self.gtext.modelText(x, y, 'Bat: ' + str(batteryVolt) + 'V')
         self.gtext.modelText(x, y + 13, 'Bat cell: ' + str(batteryVolt/2) + 'V')
         self.gtext.modelText(x, y + 26, 'PI: ' + str(rpiVoltage) + 'V')
-        self.gtext.modelText(x, y + 39, 'PI: ' + str(rpiCurr) + 'A')        
-        self.gtext.modelText(x, y + 52, 'PI core: ' + str(rpiStabTemp) + 'C')        
+        self.gtext.modelText(x, y + 39, 'PI: ' + str(rpiCurr) + 'A')      
+
+    def modelSystemMetrics(self, x, y, rpiStabTemp):            
+        self.gtext.modelText(x, y + 52, 'PI core: ' + str(rpiStabTemp) + 'C') 
+
+    def modelBatteryLevel(self, x, y, l, batteryVolt, minVolt, maxVolt, varnVolt, critVolt):
+        barColour = COLOUR_CREAM
+        if batteryVolt <= critVolt:
+            barColour = COLOUR_RED
+        elif batteryVolt <= varnVolt:
+            barColour = COLOUR_ORANGE
+        if batteryVolt > minVolt:
+            lv = 0
+            if batteryVolt <= maxVolt:  
+                unit = l/(maxVolt - minVolt)
+                lv = round((batteryVolt-minVolt) * unit)
+            else:
+                lv = l
+            point1 = x+10, y+5
+            point2 = x+lv, y+5
+            pygame.draw.line(self.screen, barColour, point1, point2, 6)
         
-    def modelBatteryLevel(self, x, y, batteryVolt):
-        point1 = x+10, y+5
-        point2 = x+330, y+5
-        pygame.draw.line(self.screen, COLOUR_CREAM, point1, point2, 6)
         point3 = x+10, y+11
-        point4 = x+330, y+11
+        point4 = x+l, y+11
         pygame.draw.line(self.screen, COLOUR_CREAM, point3, point4, 1)
         point5 = x+10, y
-        point6 = x+330, y
+        point6 = x+l, y
         pygame.draw.line(self.screen, COLOUR_CREAM, point5, point6, 1)
 
         self.gtext.modelText(x,y+6, '0')        
-        self.gtext.modelText(x+350,y+6, '100%')
+        self.gtext.modelText(x+l+20,y+6, '100%')
     
