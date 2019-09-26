@@ -18,10 +18,7 @@ val = ((BATTERY_VOLTAGE_RANGE / ADC_RESOLUTION) * 28280 ) * BATTERY_VOLTAGE_DIVI
 #  -   8 = +/-0.512V
 #  -  16 = +/-0.256V
 # See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
-GAIN[0] = 1
-GAIN[1] = 2/3
-GAIN[2] = 8
-GAIN[3] = 1
+GAIN = [1, 2/3, 8, 1]
 
 class cc_i2c_adc_ADS1115:
     def __init__(self):
