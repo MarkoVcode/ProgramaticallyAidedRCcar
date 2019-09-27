@@ -153,7 +153,7 @@ class cc_sensors:
             self.sensors['power'] = power_data
         else:
             self.sensors['accel'] = {'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906}
-            self.sensors['power'] = {"battery_volt":7.0, "pi_volt":5.1, "pi_current": 3}
+            self.sensors['power'] = {"battery_volt":7.5, "pi_volt":5.1, "pi_current": 3.2}
 
     def readSystemMetrix(self):
         if cc_configuration.isHardwareSupported():

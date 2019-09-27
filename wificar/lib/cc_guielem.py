@@ -147,7 +147,7 @@ class cc_guielem:
 
     def modelPowerMetrics(self, x, y, batteryVolt, rpiVoltage, rpiCurr):      
         self.gtext.modelText(x, y, 'Bat: ' + str(batteryVolt) + 'V')
-        self.gtext.modelText(x, y + 13, 'Bat cell: ' + str(batteryVolt/2) + 'V')
+        self.gtext.modelText(x, y + 13, 'Bat cell: ' + str(round((batteryVolt/2),1)) + 'V')
         self.gtext.modelText(x, y + 26, 'PI: ' + str(rpiVoltage) + 'V')
         self.gtext.modelText(x, y + 39, 'PI: ' + str(rpiCurr) + 'A')      
 

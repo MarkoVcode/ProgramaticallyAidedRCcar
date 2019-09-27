@@ -1,11 +1,7 @@
 import socket
 import sys
-import logging
 import json
 import cc_configuration
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='(%(threadName)-9s) %(message)s',)
 
 # throttle neutral 350 max 370 min 330
 # dir neutral 340 max 380 min 300
