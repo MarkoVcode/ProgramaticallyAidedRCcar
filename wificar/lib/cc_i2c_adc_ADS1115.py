@@ -6,7 +6,7 @@ BATTERY_VOLTAGE_RANGE = 4.096 * 2  #gain 1
 PI_VOLTAGE_RANGE = 6.144 * 2       #gain 2/3
 PI_CURRENT_RANGE = 0.512 * 2    #gain 8
 BATTERY_VOLTAGE_DIVIDER_RATIO = 2.54777070063694
-PI_VOLTAGE_CURRENT_MULTIPLYIER = -10.9
+PI_VOLTAGE_CURRENT_MULTIPLYIER = -10.5
 
 # Choose a gain of 1 for reading voltages from 0 to 4.09V.
 # Or pick a different gain to change the range of voltages that are read:
