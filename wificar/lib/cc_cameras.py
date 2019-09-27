@@ -24,7 +24,7 @@ class cc_cameras:
     def modelFrontCameraView(self):
         if self.camFront:
             image = self.camFront.get_image()
-            image = pygame.transform.scale(image,(720,480))
+            image = pygame.transform.scale(image,(640,480))
             self.screen.blit(image,(0,0))
 
     def modelBackCameraView(self):
