@@ -22,22 +22,27 @@ GAIN = [1, 2/3, 8, 1]
 class cc_i2c_adc_ADS1115:
     def __init__(self):
        self.adc = Adafruit_ADS1x15.ADS1115()
-
+       self.calcVal = None
     def get_power_data(self):
-        values = self.getValues()
-        return {"battery_volt": values[0], "pi_volt": values[1], "pi_current": values[2]}
-    
+        self.getValues()
+        if self.calcVal == None:
+            self.getValues()
+        return {"battery_volt": self.calcVal[0], "pi_volt": self.calcVal[1], "pi_current": self.calcVal[2]}
+
+
     def getValues(self):
         values = [0]*4
         valuesCalculated = [0]*4
         for i in range(4):
-            values[i] = self.adc.read_adc(i, gain=GAIN[i])
-            if i == 0:
-                valuesCalculated[i] = round((((BATTERY_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]) * BATTERY_VOLTAGE_DIVIDER_RATIO),1)
-            if i == 1:
-                valuesCalculated[i] = round(((PI_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]),1)
-            if i == 2:
-                valuesCalculated[i] = round((((PI_CURRENT_RANGE / ADC_RESOLUTION) * values[i]) * PI_VOLTAGE_CURRENT_MULTIPLYIER),1)
-            if i == 3:
-                valuesCalculated[i] = values[i]
-        return valuesCalculated
+            try:
+                values[i] = self.adc.read_adc(i, gain=GAIN[i])
+                if i == 0:
+                    valuesCalculated[i] = round((((BATTERY_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]) * BATTERY_VOLTAGE_DIVIDER_RATIO),1)
+                if i == 1:
+                    valuesCalculated[i] = round(((PI_VOLTAGE_RANGE / ADC_RESOLUTION) * values[i]),1)
+                if i == 2:
+                    valuesCalculated[i] = round((((PI_CURRENT_RANGE / ADC_RESOLUTION) * values[i]) * PI_VOLTAGE_CURRENT_MULTIPLYIER),1)
+                if i == 3:
+                    valuesCalculated[i] = values[i]
+                self.calcVal = valuesCalculated
+
