@@ -12,6 +12,7 @@ class cc_guielem:
     def __init__(self, screen):
        self.gtext = cc_gtext(screen)
        self.screen = screen
+       self.currentVoltageValue=10
 
     def modelHorizonScale(self, x, y):
         screen_rect = self.screen.get_rect()
@@ -85,6 +86,16 @@ class cc_guielem:
         self.gtext.modelText(x,y + 13, 'y:'+str(ay))
         self.gtext.modelText(x,y + 26, 'z:'+str(az))
 
+    def modelRoadOutline(self, x, y, dirValue):
+        if dirValue == 0:
+            point1 = 270+x, 0+y
+            point2 = 170+x, 240+y
+            pygame.draw.line(self.screen, COLOUR_CREAM, point1, point2, 1)
+            point3 = 370+x, 0+y
+            point4 = 470+x, 240+y
+            pygame.draw.line(self.screen, COLOUR_CREAM, point3, point4, 1)
+       # pygame.draw.circle(self.screen, (255,255,255), ((640/2),(480/2)), 2, 2)
+
     def modelWheelsState(self, x, y, dirValue, throttleValue):
         xoffset = -30
         yoffset = -200
@@ -155,6 +166,7 @@ class cc_guielem:
         self.gtext.modelText(x, y + 52, 'PI core: ' + str(rpiStabTemp) + 'C') 
 
     def modelBatteryLevel(self, x, y, l, batteryVolt, minVolt, maxVolt, varnVolt, critVolt):
+        step = 1
         barColour = COLOUR_CREAM
         if batteryVolt <= critVolt:
             barColour = COLOUR_RED
@@ -165,10 +177,14 @@ class cc_guielem:
             if batteryVolt <= maxVolt:  
                 unit = l/(maxVolt - minVolt)
                 lv = round((batteryVolt-minVolt) * unit)
+                if self.currentVoltageValue < lv:
+                    self.currentVoltageValue = self.currentVoltageValue + step
+                if self.currentVoltageValue > lv:
+                    self.currentVoltageValue = self.currentVoltageValue - step
             else:
-                lv = l
+                self.currentVoltageValue = l
             point1 = x+10, y+5
-            point2 = x+lv, y+5
+            point2 = x+self.currentVoltageValue, y+5
             pygame.draw.line(self.screen, barColour, point1, point2, 6)
         
         point3 = x+10, y+11

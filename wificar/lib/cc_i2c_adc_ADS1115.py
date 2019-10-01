@@ -29,7 +29,6 @@ class cc_i2c_adc_ADS1115:
             self.getValues()
         return {"battery_volt": self.calcVal[0], "pi_volt": self.calcVal[1], "pi_current": self.calcVal[2]}
 
-
     def getValues(self):
         values = [0]*4
         valuesCalculated = [0]*4
@@ -45,4 +44,6 @@ class cc_i2c_adc_ADS1115:
                 if i == 3:
                     valuesCalculated[i] = values[i]
                 self.calcVal = valuesCalculated
+            except:
+                print("ADC - connection issue")
 

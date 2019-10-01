@@ -4,13 +4,26 @@ import cc_configuration
 class cc_cameras:
     def __init__(self, screen):
         self.screen = screen
+        #For camera zoom animation
+        self.backx = 160
+        self.backy = 120
+        self.backpx = 240
+        self.backpy = 356
+        self.backDefx = 160
+        self.backDefy = 120
+        self.backDefpx = 240
+        self.backDefpy = 356
+        self.backMaxx = 640
+        self.backMaxy = 480
+        self.backMaxpx = 0
+        self.backMaxpy = 0   
         if cc_configuration.isHardwareSupported():
             self.cam_list = cc_configuration.PI_CAMERAS
         else:
             self.cam_list = pygame.camera.list_cameras()
         if len(self.cam_list) >= 2:            
             self.camFront = pygame.camera.Camera(self.cam_list[0],(640,480))
-            self.camBack  = pygame.camera.Camera(self.cam_list[1],(160,120))
+            self.camBack  = pygame.camera.Camera(self.cam_list[1],(640,480))
             self.camFront.start()
             self.camBack.start()
         elif len(self.cam_list) == 1:
@@ -29,9 +42,34 @@ class cc_cameras:
 
     def modelBackCameraView(self):
         if self.camBack:
-            image = self.camBack.get_image()
-            image = pygame.transform.scale(image,(160,120))
-            self.screen.blit(image,(240,356))
+            self._drawBackCameraPicture(160, 120, 240, 356)
+
+    def modelAnimatedBackCameraView(self, inORout):
+        step = 120
+        if inORout:
+            if self.backpx > self.backMaxpx:
+                self.backpx = self.backpx - step
+            if self.backpy > self.backMaxpy: 
+                self.backpy = self.backpy - step
+            if self.backx < self.backMaxx:
+                self.backx = self.backx + step
+            if self.backy < self.backMaxy: 
+                self.backy = self.backy + step
+        else:
+            if self.backpx < self.backDefpx:
+                self.backpx = self.backpx + step
+            if self.backpy < self.backDefpy: 
+                self.backpy = self.backpy + step
+            if self.backx > self.backDefx:
+                self.backx = self.backx - step
+            if self.backy > self.backDefy: 
+                self.backy = self.backy - step
+        self._drawBackCameraPicture(self.backx, self.backy, self.backpx, self.backpy)
+
+    def _drawBackCameraPicture(self, x, y, px, py):
+        image = self.camBack.get_image()
+        image = pygame.transform.scale(image,(x,y))
+        self.screen.blit(image,(px,py))
 
     def stopCameras(self):
         if self.camFront:

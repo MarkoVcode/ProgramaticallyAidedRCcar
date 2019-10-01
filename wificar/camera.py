@@ -39,6 +39,7 @@ def render_hud():
     guiElem.modelHorizonScale(1,2)
     if udpClient.isConnectionAlive():
         guiElem.modelWheelsState(1, 2, control.getDirection(), control.getThrottle())
+        guiElem.modelRoadOutline(0, 240, control.getDirection())
         if 'accel' in sensors.keys():
             guiElem.modelHorizonLine(180, 240, sensors['accel']['x'], sensors['accel']['y'], sensors['accel']['z'])
             guiElem.modelHorizonValues(330, 100, sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
@@ -51,12 +52,13 @@ def render_hud():
        #render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
 
 crashed = False
-
+zoom = False
 while not crashed:
     time.sleep(0.001)
     cameras.modelFrontCameraView()
     if control.getHudRendering():
-        cameras.modelBackCameraView()
+        #cameras.modelBackCameraView()
+        cameras.modelAnimatedBackCameraView(zoom)
     if control.getHudRendering() == 2:          
         render_hud()
     if not udpClient.isConnectionAlive():
@@ -75,6 +77,12 @@ while not crashed:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 crashed = True
+            if event.key == pygame.K_m:
+                zoom = True 
+        
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_m:
+                zoom = False
 
         control.processKeyboardEvent(event)
 

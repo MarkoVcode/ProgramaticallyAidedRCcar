@@ -20,6 +20,7 @@ mpu6050-raspberrypi
 sudo pip install adafruit-ads1x15
 
 #audio config
+cat /proc/asound/cards - to see the mic
 pactl list
 pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sound_Device-00.analog-mono | pacat -p --latency-msec=1
 
@@ -32,3 +33,8 @@ pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sou
 # sudo udevadm info --query=all --name=/dev/video2
 # 2)
 # sudo udevadm info -ap /devices/virtual/video4linux/video2
+
+
+refresh dependency list
+pipreqs --force ProgramaticallyAidedRCcar/wificar
+
