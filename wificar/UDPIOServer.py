@@ -17,9 +17,6 @@ logging.basicConfig(level=logging.DEBUG,
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = (gameConfig.UDP_SERVER_ADDRESS, gameConfig.UDP_SERVER_PORT)
-sock.bind(server_address)
-
-logging.debug('Starting up on %s port %s' % server_address)
 
 networkInfo = cc_wifi()
 hw = cc_sensors()
@@ -33,16 +30,9 @@ class ProducerThread(threading.Thread):
         super(ProducerThread,self).__init__()
         self.target = target
         self.name = name
-        self.firstRun = True
 
     def run(self):
         while True:
-            if self.firstRun:
-                systemNetworkInfo = "i2c:oled:" + networkInfo.fetchNetworkData()
-                q.put(systemNetworkInfo)
-                logging.debug('Putting ' + str(systemNetworkInfo)  
-                                + ' : ' + str(q.qsize()) + ' items in queue')
-                self.firstRun = False
             time.sleep(0.001)
             logging.debug('Awaiting for the messages. ' + str(q.qsize()) + ' items in queue')
             data, address = sock.recvfrom(4096)
@@ -80,15 +70,68 @@ class ConsumerThread(threading.Thread):
             hw.readAllSensorsCycle()
         return
 
+class NetworkMonitor(threading.Thread):
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs=None, verbose=None):
+        super(NetworkMonitor,self).__init__()
+        self.target = target
+        self.name = name
+
+        #For network info displayed
+        self.firstRun = True
+        self.startTime = time.time()
+        self.lastDisplayUpdate = 0
+        return
+
+    def run(self):
+        while True:
+            time.sleep(gameConfig.UDP_SERVER_DISPLAY_UPDATE_EVERY_SEC)
+            self.netInfo()
+        return
+
+    def netInfo(self):
+        ##Add users session monitor here and potentially queues info??
+        if self.firstRun:
+            if time.time() - self.startTime < gameConfig.UDP_SERVER_WAIT_FOR_WIFI_SEC:
+                wifi = networkInfo.fetchNetworkData()
+                if "localhost" in wifi:
+                    self.displayOLED(self.netWaitingMessage())
+                else:
+                    self.displayOLED(wifi)
+                    self.firstRun = False
+            else:
+                self.displayOLED(networkInfo.fetchNetworkData())
+                self.firstRun = False
+    
+    def netWaitingMessage(self):
+        if time.time() % 2 < 1:
+            return "- wifi scan -"
+        else:
+            return "* wifi scan *"
+
+    def displayOLED(self, message):
+        messageToDisplay = "i2c:oled:" + message
+        q.put(messageToDisplay)
+        logging.debug('Putting ' + str(messageToDisplay)  
+                        + ' : ' + str(q.qsize()) + ' items in queue')
+
 def writePidFile():
     pid = str(os.getpid())
-    f = open('server.pid', 'w')
+    f = open(gameConfig.UDP_SERVER_PID_FILE, 'w')
     f.write(pid)
     f.close()
 
 if __name__ == '__main__':
-    writePidFile()
-    p = ProducerThread(name='producer')
-    c = ConsumerThread(name='consumer')
-    p.start()
-    c.start()
+    #writePidFile()
+    try:
+        sock.bind(server_address)
+        logging.debug('Starting up on %s port %s' % server_address)
+        p = ProducerThread(name='producer')
+        c = ConsumerThread(name='consumer')
+        n = NetworkMonitor(name='network')
+        p.start()
+        c.start()
+        n.start()
+    except:
+        logging.debug('Can not start. Socket in use.')
+        exit    

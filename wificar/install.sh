@@ -1,4 +1,5 @@
-#!/bin/bash 
+#!/bin/bash
+
 #https://www.dafont.com/
 #https://www.linux-projects.org/uv4l/tutorials/play-retropie-in-browser/
 #https://www.linux-projects.org/uv4l/tutorials/rpi-webapp-screen-audio-keyboard-sharing/
@@ -12,6 +13,8 @@ pip install -r requirements.txt
 
 https://stackoverflow.com/questions/43319199/how-to-loop-back-the-microphone-entry-directly-to-speakers-on-linux/43319706
 https://superuser.com/questions/87571/how-to-hear-mic-sound-over-speakers-ubuntu-karmic
+
+VD Guests
 
 adafruit-pca9685
 Adafruit-SSD1306
@@ -38,3 +41,12 @@ pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sou
 refresh dependency list
 pipreqs --force ProgramaticallyAidedRCcar/wificar
 
+
+
+#UARTS:
+https://www.tomshardware.com/reviews/raspberry-pi-gpio-pinout,6122.html
+https://www.raspberrypi.org/forums/viewtopic.php?t=244827
+
+
+python --version
+Python 2.7.15+

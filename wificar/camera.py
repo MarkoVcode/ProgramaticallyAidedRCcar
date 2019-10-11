@@ -26,6 +26,7 @@ pygame.mixer.quit()  #performance work around - not needed normally
 pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
 pygame.camera.init()
 
+#https://stackoverflow.com/questions/29135147/what-do-hwsurface-and-doublebuf-do
 screen = pygame.display.set_mode((640,480),0)
 pygame.display.set_caption('Steer the Car')
 
@@ -56,9 +57,11 @@ zoom = False
 while not crashed:
     time.sleep(0.001)
     cameras.modelFrontCameraView()
+    guiElem.modelRadar(20, 400)
     if control.getHudRendering():
         #cameras.modelBackCameraView()
-        cameras.modelAnimatedBackCameraView(zoom)
+        #cameras.modelAnimatedBackCameraView(zoom)
+        print("d")
     if control.getHudRendering() == 2:          
         render_hud()
     if not udpClient.isConnectionAlive():

@@ -13,6 +13,7 @@ class cc_guielem:
        self.gtext = cc_gtext(screen)
        self.screen = screen
        self.currentVoltageValue=10
+       self.radarFrameCounter = 1
 
     def modelHorizonScale(self, x, y):
         screen_rect = self.screen.get_rect()
@@ -196,4 +197,15 @@ class cc_guielem:
 
         self.gtext.modelText(x,y+6, '0')        
         self.gtext.modelText(x+l+20,y+6, '100%')
+    
+    def modelRadar(self, x, y):
+        radarImg = pygame.image.load('assets/radar1/frame_'+str(self.radarFrameCounter)+'.png')
+        radarImg = pygame.transform.scale(radarImg, (60, 60))
+        BLACK = (24, 24, 24)
+        radarImg.set_colorkey(BLACK)
+        self.screen.blit(radarImg, (x,y))
+        if self.radarFrameCounter < 90:
+            self.radarFrameCounter = self.radarFrameCounter + 1
+        else: 
+            self.radarFrameCounter = 1
     
