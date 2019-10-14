@@ -38,7 +38,7 @@ pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sou
 # sudo udevadm info -ap /devices/virtual/video4linux/video2
 
 
-refresh dependency list
+refresh dependency list generation
 pipreqs --force ProgramaticallyAidedRCcar/wificar
 
 

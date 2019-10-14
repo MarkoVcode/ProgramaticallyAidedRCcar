@@ -8,7 +8,8 @@ import cc_configuration
 
 if cc_configuration.isHardwareSupported():
     import Adafruit_PCA9685
-    from mpu6050 import mpu6050
+    #from mpu6050 import mpu6050
+    from cc_i2c_accel_MPU6050 import cc_i2c_accel_MPU6050
     from cc_i2c_oled_SSD1306 import cc_i2c_oled_SSD1306
     from cc_i2c_adc_ADS1115 import cc_i2c_adc_ADS1115
 
@@ -31,7 +32,9 @@ class cc_sensors:
            self.pwm.set_pwm_freq(60)
            #init oled here
            self.oled = cc_i2c_oled_SSD1306()
-           self.accelerometer = mpu6050(0x68)
+           self.accelerometer = cc_i2c_accel_MPU6050()
+           self.accelerometer.initAccel(0x68)
+           #self.accelerometer = mpu6050(0x68)
            self.power = cc_i2c_adc_ADS1115()
 
     def interactionID(self, stringLength=5):
@@ -130,13 +133,13 @@ class cc_sensors:
             self.readSystemMetrix()
             self.sensorCycle[1] = 0
             self.sensorCycle[2] = 1
-            return            
-        elif self.sensorCycle[2] == 1:                
+            return
+        elif self.sensorCycle[2] == 1:
             self.readSensors1W()
             self.readSensorsProximity()
             self.sensorCycle[2] = 0
             self.sensorCycle[0] = 1
-            return              
+            return
 
     def readSensorsGPS(self):
         if cc_configuration.isHardwareSupported():
@@ -146,7 +149,7 @@ class cc_sensors:
 
     def readSensorsI2C(self):
         if cc_configuration.isHardwareSupported():
-            accelerometer_data = self.accelerometer.get_accel_data()
+            accelerometer_data = self.accelerometer.getData()
             power_data = self.power.get_power_data()
             print(power_data)
             self.sensors['accel'] = accelerometer_data
