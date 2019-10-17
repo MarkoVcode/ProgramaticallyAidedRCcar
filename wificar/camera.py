@@ -12,6 +12,7 @@ from lib.cc_guielem import cc_guielem
 from lib.cc_udpclient import cc_udpclient
 from lib.cc_cameras import cc_cameras
 from lib.cc_control import cc_control
+from lib.cc_sensors import cc_sensors
 
 os.environ['SDL_AUDIODRIVER'] = 'dsp' # alsa driver error issue
 
@@ -34,6 +35,7 @@ animText = cc_gatext(screen)
 guiElem = cc_guielem(screen)
 cameras = cc_cameras(screen)
 control = cc_control(udpClient)
+sensorsUtil = cc_sensors()
 
 def render_hud():
     sensors = udpClient.fetchSensors('ALL')
@@ -48,7 +50,7 @@ def render_hud():
             guiElem.modelPowerMetrics(80, 100, sensors['power']['battery_volt'], sensors['power']['pi_volt'], sensors['power']['pi_current'])
             guiElem.modelBatteryLevel(150, 5, 330, sensors['power']['battery_volt'], gameConfig.BATTERY_VOLTAGE_MIN, gameConfig.BATTERY_VOLTAGE_MAX, gameConfig.BATTERY_VOLTAGE_WARN, gameConfig.BATTERY_VOLTAGE_CRIT)
         if 'system' in sensors.keys():
-            guiElem.modelSystemMetrics(80, 140, sensors['system']['core_temp'])
+            guiElem.modelSystemMetrics(80, 140, sensorsUtil.filterPowerReading(sensors['system']['core_temp']))
        #guiElem.modelHorizonLine(180, 240, 0, 0, 0)
        #render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
 

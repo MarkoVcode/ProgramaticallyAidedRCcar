@@ -5,6 +5,7 @@ import os
 import time
 import subprocess
 import cc_configuration
+from cc_sensor_filters import *
 
 if cc_configuration.isHardwareSupported():
     import Adafruit_PCA9685
@@ -26,6 +27,7 @@ class cc_sensors:
        self.read_sensor_cycle_timer = 0
        self.sensors = {}
        self.sensorCycle = [1, 0, 0]
+       self.kf = EWMAFilter()
        print "Hardware Init"
        if cc_configuration.isHardwareSupported():
            self.pwm = Adafruit_PCA9685.PCA9685()
@@ -44,9 +46,7 @@ class cc_sensors:
     def executeIOInteraction(self, intId, instruction):
         instElems = instruction.split(":",)
         if instElems[0] == "i2c":
-            #print "I2C message!"
             if instElems[1] == "pwm":
-                #print "EXECUTE Adafruit_PCA9685.PCA9685"
                 if instElems[2] == 'dir':
                     if cc_configuration.isHardwareSupported():
                         self.pwm.set_pwm(cc_configuration.CAR_STEER_PWM_CHANNEL, 0, self.calculateServoPWMValue(instElems[3]))
@@ -63,7 +63,6 @@ class cc_sensors:
                 if cc_configuration.isHardwareSupported():
                     self.oled.writeText(instElems[2])
         elif instElems[0] == "gpio":
-            #print "GPIO message!"
             if instElems[1] == "pin":
                 #print "EXECUTE GPIO PIN CHANGE"
                 #convert to pin number here
@@ -151,19 +150,27 @@ class cc_sensors:
         if cc_configuration.isHardwareSupported():
             accelerometer_data = self.accelerometer.getData()
             power_data = self.power.get_power_data()
-            print(power_data)
-            self.sensors['accel'] = accelerometer_data
-            self.sensors['power'] = power_data
+            #print(power_data)
+            self.sensors['accel'] = self.filterAccelerometerReading(accelerometer_data)
+            self.sensors['power'] = self.filterPowerReading(power_data)
         else:
             self.sensors['accel'] = {'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906}
             self.sensors['power'] = {"battery_volt":7.5, "pi_volt":5.1, "pi_current": 3.2}
 
+    def filterAccelerometerReading(self, values):
+        return values
+
+    def filterPowerReading(self, value):
+        filtered = self.kf.filter(value)
+        return round(filtered, 2)
+
     def readSystemMetrix(self):
         if cc_configuration.isHardwareSupported():
-            cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'"]
+            #cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*'"]
+            cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.' | egrep -o '[0-9]*'"]
             address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
             (out, err) = address.communicate()
-            self.sensors['system'] = {"core_temp":out}
+            self.sensors['system'] = {"core_temp":int(out)}
         else:
             self.sensors['system'] = {"core_temp":33}
 

@@ -19,6 +19,7 @@ class cc_i2c_io_PCF8574:
         
         while True:
             bus.write_byte(0x20, LED1)
+            #bus.w
             time.sleep(0.5)
             bus.write_byte(0x20, LED2)
             time.sleep(0.5)
