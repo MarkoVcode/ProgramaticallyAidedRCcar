@@ -163,7 +163,7 @@ class cc_guielem:
         self.gtext.modelText(x, y + 26, 'PI: ' + str(rpiVoltage) + 'V')
         self.gtext.modelText(x, y + 39, 'PI: ' + str(rpiCurr) + 'A')      
 
-    def modelSystemMetrics(self, x, y, rpiStabTemp):            
+    def modelSystemMetrics(self, x, y, rpiStabTemp):           
         self.gtext.modelText(x, y + 52, 'PI core: ' + str(rpiStabTemp) + 'C') 
 
     def modelBatteryLevel(self, x, y, l, batteryVolt, minVolt, maxVolt, varnVolt, critVolt):

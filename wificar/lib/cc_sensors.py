@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 #Hardware init
 
-READ_SENSORS_CYCLE_SKIP = 4000000
+#READ_SENSORS_CYCLE_SKIP = 4000000
 
 # define a class
 class cc_sensors:
@@ -28,6 +28,8 @@ class cc_sensors:
        self.sensors = {}
        self.sensorCycle = [1, 0, 0]
        self.kf = EWMAFilter()
+       self.filtersSMA = {}
+       self.filtersEWMA = {}
        print "Hardware Init"
        if cc_configuration.isHardwareSupported():
            self.pwm = Adafruit_PCA9685.PCA9685()
@@ -151,18 +153,46 @@ class cc_sensors:
             accelerometer_data = self.accelerometer.getData()
             power_data = self.power.get_power_data()
             #print(power_data)
-            self.sensors['accel'] = self.filterAccelerometerReading(accelerometer_data)
-            self.sensors['power'] = self.filterPowerReading(power_data)
+            self.sensors['accel'] = accelerometer_data
+            self.sensors['power'] = power_data
+            self.sensors['accel_flt'] = self.filterAccelerometerReading(accelerometer_data)
+            self.sensors['power_flt'] = self.filterPowerReading(power_data)
         else:
             self.sensors['accel'] = {'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906}
             self.sensors['power'] = {"battery_volt":7.5, "pi_volt":5.1, "pi_current": 3.2}
+            self.sensors['accel_flt'] = self.filterAccelerometerReading({'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906})
+            self.sensors['power_flt'] = self.filterPowerReading({"battery_volt":7.5, "pi_volt":5.1, "pi_current": 3.2})
 
     def filterAccelerometerReading(self, values):
-        return values
+        return self._filterSMAValuesInDict(values)
 
-    def filterPowerReading(self, value):
-        filtered = self.kf.filter(value)
-        return round(filtered, 2)
+    def filterPowerReading(self, values):
+        return self._filterSMAValuesInDict(values)
+    
+    def filterSystemReading(self, values):
+        return self._filterEWMAValuesInDict(values)
+
+    def _filterSMAValuesInDict(self, values):
+        filteredValues = {}
+        for key in values:
+            if key not in self.filtersSMA:
+                self.filtersSMA[key] = SMAFilter()
+                valuex = self.filtersSMA[key].filter(values[key])
+            else:
+                valuex = self.filtersSMA[key].filter(values[key])
+            filteredValues[key] = valuex
+        return filteredValues
+
+    def _filterEWMAValuesInDict(self, values):
+        filteredValues = {}
+        for key in values:
+            if key not in self.filtersEWMA:
+                self.filtersEWMA[key] = EWMAFilter()
+                valuex = self.filtersEWMA[key].filter(values[key])
+            else:
+                valuex = self.filtersEWMA[key].filter(values[key])
+            filteredValues[key] = valuex
+        return filteredValues        
 
     def readSystemMetrix(self):
         if cc_configuration.isHardwareSupported():
@@ -170,9 +200,12 @@ class cc_sensors:
             cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.' | egrep -o '[0-9]*'"]
             address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
             (out, err) = address.communicate()
-            self.sensors['system'] = {"core_temp":int(out)}
+            system_data = {"core_temp":int(out)}
+            self.sensors['system'] = system_data
+            self.sensors['system_flt'] = self.filterSystemReading(system_data)
         else:
-            self.sensors['system'] = {"core_temp":33}
+            self.sensors['system'] = {"core_temp":33.05555555555}
+            self.sensors['system_flt'] = self.filterSystemReading({"core_temp":33.05555555555})
 
     def readSensors1W(self):
         if cc_configuration.isHardwareSupported():

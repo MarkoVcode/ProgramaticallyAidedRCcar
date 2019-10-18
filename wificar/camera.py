@@ -35,7 +35,6 @@ animText = cc_gatext(screen)
 guiElem = cc_guielem(screen)
 cameras = cc_cameras(screen)
 control = cc_control(udpClient)
-sensorsUtil = cc_sensors()
 
 def render_hud():
     sensors = udpClient.fetchSensors('ALL')
@@ -44,13 +43,13 @@ def render_hud():
         guiElem.modelWheelsState(1, 2, control.getDirection(), control.getThrottle())
         guiElem.modelRoadOutline(0, 240, control.getDirection())
         if 'accel' in sensors.keys():
-            guiElem.modelHorizonLine(180, 240, sensors['accel']['x'], sensors['accel']['y'], sensors['accel']['z'])
-            guiElem.modelHorizonValues(330, 100, sensors['accel']['x'],sensors['accel']['y'],sensors['accel']['z'])
+            guiElem.modelHorizonLine(180, 240, sensors['accel_flt']['x'], sensors['accel_flt']['y'], sensors['accel_flt']['z'])
+            guiElem.modelHorizonValues(330, 100, sensors['accel_flt']['x'],sensors['accel_flt']['y'],sensors['accel_flt']['z'])
         if 'power' in sensors.keys():
-            guiElem.modelPowerMetrics(80, 100, sensors['power']['battery_volt'], sensors['power']['pi_volt'], sensors['power']['pi_current'])
-            guiElem.modelBatteryLevel(150, 5, 330, sensors['power']['battery_volt'], gameConfig.BATTERY_VOLTAGE_MIN, gameConfig.BATTERY_VOLTAGE_MAX, gameConfig.BATTERY_VOLTAGE_WARN, gameConfig.BATTERY_VOLTAGE_CRIT)
+            guiElem.modelPowerMetrics(80, 100, round(sensors['power_flt']['battery_volt'],1), round(sensors['power_flt']['pi_volt'],1), round(sensors['power_flt']['pi_current'],1))
+            guiElem.modelBatteryLevel(150, 5, 330, sensors['power_flt']['battery_volt'], gameConfig.BATTERY_VOLTAGE_MIN, gameConfig.BATTERY_VOLTAGE_MAX, gameConfig.BATTERY_VOLTAGE_WARN, gameConfig.BATTERY_VOLTAGE_CRIT)
         if 'system' in sensors.keys():
-            guiElem.modelSystemMetrics(80, 140, sensorsUtil.filterPowerReading(sensors['system']['core_temp']))
+            guiElem.modelSystemMetrics(80, 140, round(sensors['system_flt']['core_temp'], 1))
        #guiElem.modelHorizonLine(180, 240, 0, 0, 0)
        #render_horizon(-1.7860744384765623,-9.016563452148437,2.205059729003906)
 
@@ -62,8 +61,7 @@ while not crashed:
     guiElem.modelRadar(20, 400)
     if control.getHudRendering():
         #cameras.modelBackCameraView()
-        #cameras.modelAnimatedBackCameraView(zoom)
-        print("d")
+        cameras.modelAnimatedBackCameraView(zoom)
     if control.getHudRendering() == 2:          
         render_hud()
     if not udpClient.isConnectionAlive():
@@ -84,7 +82,9 @@ while not crashed:
                 crashed = True
             if event.key == pygame.K_m:
                 zoom = True 
-        
+            if event.key == pygame.K_n:
+                cameras.rotateCameraList()
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_m:
                 zoom = False
