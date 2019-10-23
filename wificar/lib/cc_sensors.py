@@ -8,8 +8,9 @@ import cc_configuration
 from cc_sensor_filters import *
 
 if cc_configuration.isHardwareSupported():
-    import Adafruit_PCA9685
+    #import Adafruit_PCA9685
     #from mpu6050 import mpu6050
+    from cc_i2c_pwm_PCA9685 import cc_i2c_pwm_PCA9685
     from cc_i2c_accel_MPU6050 import cc_i2c_accel_MPU6050
     from cc_i2c_oled_SSD1306 import cc_i2c_oled_SSD1306
     from cc_i2c_adc_ADS1115 import cc_i2c_adc_ADS1115
@@ -24,22 +25,23 @@ logging.basicConfig(level=logging.DEBUG,
 # define a class
 class cc_sensors:
     def __init__(self):
-       self.read_sensor_cycle_timer = 0
-       self.sensors = {}
-       self.sensorCycle = [1, 0, 0]
-       self.kf = EWMAFilter()
-       self.filtersSMA = {}
-       self.filtersEWMA = {}
-       print "Hardware Init"
-       if cc_configuration.isHardwareSupported():
-           self.pwm = Adafruit_PCA9685.PCA9685()
-           self.pwm.set_pwm_freq(60)
-           #init oled here
-           self.oled = cc_i2c_oled_SSD1306()
-           self.accelerometer = cc_i2c_accel_MPU6050()
-           self.accelerometer.initAccel(0x68)
-           #self.accelerometer = mpu6050(0x68)
-           self.power = cc_i2c_adc_ADS1115()
+        self.read_sensor_cycle_timer = 0
+        self.sensors = {}
+        self.sensorCycle = [1, 0, 0]
+        self.kf = EWMAFilter()
+        self.filtersSMA = {}
+        self.filtersEWMA = {}
+        self.pwm = None
+        self.oled = None
+        self.accelerometer = None
+        self.power = None
+
+        print "Hardware Init"
+        if cc_configuration.isHardwareSupported():
+            self.pwm = cc_i2c_pwm_PCA9685()
+            self.oled = cc_i2c_oled_SSD1306()
+            self.accelerometer = cc_i2c_accel_MPU6050()
+            self.power = cc_i2c_adc_ADS1115()
 
     def interactionID(self, stringLength=5):
         letters = string.ascii_lowercase
@@ -151,7 +153,7 @@ class cc_sensors:
     def readSensorsI2C(self):
         if cc_configuration.isHardwareSupported():
             accelerometer_data = self.accelerometer.getData()
-            power_data = self.power.get_power_data()
+            power_data = self.power.getPowerData()
             #print(power_data)
             self.sensors['accel'] = accelerometer_data
             self.sensors['power'] = power_data

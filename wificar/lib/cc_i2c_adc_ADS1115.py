@@ -1,4 +1,5 @@
 import time
+import logging
 import Adafruit_ADS1x15
 
 ADC_RESOLUTION = 65536
@@ -19,17 +20,40 @@ PI_VOLTAGE_CURRENT_MULTIPLYIER = -10.5
 # See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
 GAIN = [1, 2/3, 8, 1]
 
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-9s) %(message)s',)
+
 class cc_i2c_adc_ADS1115:
     def __init__(self):
-       self.adc = Adafruit_ADS1x15.ADS1115()
+       self.adc = None
        self.calcVal = None
-    def get_power_data(self):
+       self.init()
+
+    def init(self):
+        success = False
+        try:
+            self.adc = Adafruit_ADS1x15.ADS1115()
+            success = True
+        except:
+            logging.debug('ADS1115 - not present')
+        return success       
+
+    def getPowerData(self):
         self.getValues()
         if self.calcVal == None:
             self.getValues()
         return {"battery_volt": self.calcVal[0], "pi_volt": self.calcVal[1], "pi_current": self.calcVal[2]}
-
+    
     def getValues(self):
+        if self.adc is None:
+            if self.init():
+                self._getValues()
+            else:
+                self.calcVal = (0.0, 0.0, 0.0)
+        else:
+            self._getValues()
+
+    def _getValues(self):
         values = [0]*4
         valuesCalculated = [0]*4
         for i in range(4):
@@ -46,4 +70,8 @@ class cc_i2c_adc_ADS1115:
                 self.calcVal = valuesCalculated
             except:
                 print("ADC - connection issue")
+
+if __name__ == '__main__':
+    adc = cc_i2c_adc_ADS1115()
+    print(adc.getPowerData())
 

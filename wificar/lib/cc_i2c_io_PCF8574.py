@@ -1,9 +1,18 @@
-import smbus
 import time
+import logging
+import smbus
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-9s) %(message)s',)
 
 class cc_i2c_io_PCF8574:
     def __init__(self):
         print("PCF8574")
+
+    def init(self):
+        print("PCF8574 init")
+
+
        #https://www.raspberrypi.org/forums/viewtopic.php?t=176643
        #https://github.com/flyte/pcf8574/blob/develop/pcf8574/__init__.py
        #pibits.net/code/raspberry-pi-pcf8574-example.php
@@ -27,3 +36,6 @@ class cc_i2c_io_PCF8574:
             time.sleep(0.5)
             bus.write_byte(0x20, LED4)
             time.sleep(0.5)
+
+if __name__ == '__main__':
+    io = cc_i2c_io_PCF8574()

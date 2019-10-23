@@ -1,5 +1,5 @@
 import time
-
+import logging
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 
@@ -10,28 +10,52 @@ from PIL import ImageFont
 # Raspberry Pi pin configuration:
 RST = 24
 
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-9s) %(message)s',)
+
 # define a class
 class cc_i2c_oled_SSD1306:
     def __init__(self):
-        # 128x32 display with hardware I2C:
-        #disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
-        # 128x64 display with hardware I2C:
-        self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
+        self.disp = None
+        self.init()
 
-        # Note you can change the I2C address by passing an i2c_address parameter like:
-        # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
+    def init(self):
+        success = False
+        try:
+            # 128x32 display with hardware I2C:
+            #disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
+            # 128x64 display with hardware I2C:
+            self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
 
-        # Alternatively you can specify an explicit I2C bus number, for example
-        # with the 128x32 display you would use:
-        # disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST, i2c_bus=2)
+            # Note you can change the I2C address by passing an i2c_address parameter like:
+            # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
 
-        # Initialize library.
-        self.disp.begin()
+            # Alternatively you can specify an explicit I2C bus number, for example
+            # with the 128x32 display you would use:
+            # disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST, i2c_bus=2)
+
+            # Initialize library.
+            self.disp.begin()
+            success = True
+        except:
+            logging.debug('SSD1306 - not present')
+        return success
 
     def writeText(self, text):
-        self.render(text)
-
+        if self.disp is None:
+            if self.init():
+                self.render(text)
+        else:
+            self.render(text)
+            
     def render(self, text):
+        try:
+            self._render(text)
+        except:
+            logging.debug('SSD1306 - not present')
+            self.disp = None
+
+    def _render(self, text):
         # Clear display.
         self.disp.clear()
         self.disp.display()
@@ -57,3 +81,7 @@ class cc_i2c_oled_SSD1306:
             lineSpace = lineSpace + 10
         self.disp.image(image)
         self.disp.display()
+
+if __name__ == '__main__':
+    oled = cc_i2c_oled_SSD1306()
+    oled.writeText("test")

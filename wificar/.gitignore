@@ -1,2 +1,5 @@
 *.pyc
 server.pid
+*.save
+*.swp
+*.out

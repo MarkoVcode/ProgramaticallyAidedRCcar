@@ -35,19 +35,22 @@ class ProducerThread(threading.Thread):
         while True:
             time.sleep(0.001)
             logging.debug('Awaiting for the messages. ' + str(q.qsize()) + ' items in queue')
-            data, address = sock.recvfrom(4096)
-            instElems = data.split(":",)
-            if instElems[0] == "read":
-                sensors = hw.fetchSensors(instElems[1])
-                sent = sock.sendto(str(sensors), address)
-                logging.debug('Returning sensors: ' + str(sensors))
-            else:
-                if not q.full():
-                    q.put(data)
-                    logging.debug('Putting ' + str(data)  
-                                + ' : ' + str(q.qsize()) + ' items in queue')
-                if data:
-                    sent = sock.sendto(data, address)
+            try:
+                data, address = sock.recvfrom(4096)
+                instElems = data.split(":",)
+                if instElems[0] == "read":
+                    sensors = hw.fetchSensors(instElems[1])
+                    sent = sock.sendto(str(sensors), address)
+                    logging.debug('Returning sensors: ' + str(sensors))
+                else:
+                    if not q.full():
+                        q.put(data)
+                        logging.debug('Putting ' + str(data)  
+                                    + ' : ' + str(q.qsize()) + ' items in queue')
+                    if data:
+                        sent = sock.sendto(data, address)
+            except:
+                logging.debug('Problem with producer: ')
         return
 
 class ConsumerThread(threading.Thread):
@@ -61,13 +64,16 @@ class ConsumerThread(threading.Thread):
     def run(self):
         while True:
             time.sleep(0.001)
-            if not q.empty():
-                intId = hw.interactionID()
-                item = q.get()
-                logging.debug(intId + ' Getting ' + str(item) 
-                              + ' : ' + str(q.qsize()) + ' items in queue')
-                hw.executeIOInteraction(intId, str(item))
-            hw.readAllSensorsCycle()
+            try:
+                if not q.empty():
+                    intId = hw.interactionID()
+                    item = q.get()
+                    logging.debug(intId + ' Getting ' + str(item) 
+                                + ' : ' + str(q.qsize()) + ' items in queue')
+                    hw.executeIOInteraction(intId, str(item))
+                hw.readAllSensorsCycle()
+            except:
+                logging.debug('Problem with consumer: ')
         return
 
 class NetworkMonitor(threading.Thread):
@@ -86,7 +92,10 @@ class NetworkMonitor(threading.Thread):
     def run(self):
         while True:
             time.sleep(gameConfig.UDP_SERVER_DISPLAY_UPDATE_EVERY_SEC)
-            self.netInfo()
+            try:
+                self.netInfo()
+            except:
+                logging.debug('Problem with display: ')
         return
 
     def netInfo(self):
