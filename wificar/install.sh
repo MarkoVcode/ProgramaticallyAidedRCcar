@@ -27,6 +27,8 @@ cat /proc/asound/cards - to see the mic
 pactl list
 pacat -r --latency-msec=1 -d alsa_input.usb-C-Media_Electronics_Inc._USB_PnP_Sound_Device-00.analog-mono | pacat -p --latency-msec=1
 
+sudo nmap -sn 10.0.2.0/24
+
 #wireless config:
 #sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 

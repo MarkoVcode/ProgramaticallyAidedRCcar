@@ -7,10 +7,12 @@ import random
 import Queue
 import socket
 import sys
-
+import json
 import lib.cc_configuration as gameConfig
 from lib.cc_wifi import cc_wifi
 from lib.cc_sensors import cc_sensors
+from lib.cc_retry_delay import cc_retry_delay
+from websocket import create_connection
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -20,7 +22,7 @@ server_address = (gameConfig.UDP_SERVER_ADDRESS, gameConfig.UDP_SERVER_PORT)
 
 networkInfo = cc_wifi()
 hw = cc_sensors()
-
+#wifi = ""
 BUF_SIZE = 20
 q = Queue.Queue(BUF_SIZE)
 
@@ -76,6 +78,50 @@ class ConsumerThread(threading.Thread):
                 logging.debug('Problem with consumer: ')
         return
 
+class PushMetricsCloud(threading.Thread):
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs=None, verbose=None):
+        super(PushMetricsCloud,self).__init__()
+        self.target = target
+        self.name = name
+        self.wsc = None
+        self.identity = {}
+        self.identity["vechicleId"] = gameConfig.VECHICLE_ID
+        self.retryDelay = cc_retry_delay()
+        return
+
+    def run(self):
+        while True:
+            time.sleep(gameConfig.METRICS_CLOUD_UPDATE_EVERY_SEC)
+            try:
+                if self.wsc is None:
+                    self.wsc = create_connection(gameConfig.METRICS_ON_CLOUD_URL)
+                readings = hw.fetchSensors('ALL')
+                control = hw.fetchControls()
+                self.identity["net"] = "localhost"
+               #print(wifi)
+                data = {}
+                data["control"] = control
+                data["readings"] = readings
+                payload = {}
+                payload["vState"] = {}
+                payload["vState"]["identity"] = self.identity
+                payload["vState"]["data"] = data
+                self.wsc.send(json.dumps(payload))
+                result = self.wsc.recv()
+                #  print "Received '%s'" % result
+                self.retryDelay.reset()
+            except:
+                self.retryDelay.fail()
+                logging.debug('Problem with publishing metrics.')
+                try:
+                    self.wsc.close()
+                except:
+                    logging.debug('Can not close wsc')
+                    self.wsc = None
+                    time.sleep(self.retryDelay.getDelay())
+        return
+
 class NetworkMonitor(threading.Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs=None, verbose=None):
@@ -103,6 +149,7 @@ class NetworkMonitor(threading.Thread):
         if self.firstRun:
             if time.time() - self.startTime < gameConfig.UDP_SERVER_WAIT_FOR_WIFI_SEC:
                 wifi = networkInfo.fetchNetworkData()
+                #print(wifi)
                 if "localhost" in wifi:
                     self.displayOLED(self.netWaitingMessage())
                 else:
@@ -111,7 +158,8 @@ class NetworkMonitor(threading.Thread):
             else:
                 self.displayOLED(networkInfo.fetchNetworkData())
                 self.firstRun = False
-    
+        #print(wifi)
+
     def netWaitingMessage(self):
         if time.time() % 2 < 1:
             return "- wifi scan -"
@@ -138,9 +186,12 @@ if __name__ == '__main__':
         p = ProducerThread(name='producer')
         c = ConsumerThread(name='consumer')
         n = NetworkMonitor(name='network')
+        m = PushMetricsCloud(name='metrics')
         p.start()
         c.start()
         n.start()
+        if gameConfig.METRICS_ON_CLOUD_ENABLED:
+            m.start()
     except:
         logging.debug('Can not start. Socket in use.')
         exit    

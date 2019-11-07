@@ -27,6 +27,7 @@ class cc_sensors:
     def __init__(self):
         self.read_sensor_cycle_timer = 0
         self.sensors = {}
+        self.control = {}
         self.sensorCycle = [1, 0, 0]
         self.kf = EWMAFilter()
         self.filtersSMA = {}
@@ -119,6 +120,9 @@ class cc_sensors:
         else:
             return self.sensors[selectedSensor]
 
+    def fetchControls(self):
+        return self.control
+
     def readAllSensorsCycle(self):
         milli_sec = int(round(time.time() * 1000))
         if milli_sec - cc_configuration.UPDATE_SENSORS_EVERY_MS > self.read_sensor_cycle_timer:
@@ -161,7 +165,7 @@ class cc_sensors:
             self.sensors['power_flt'] = self.filterPowerReading(power_data)
         else:
             self.sensors['accel'] = {'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906}
-            self.sensors['power'] = {"battery_volt":7.5, "pi_volt":5.1, "pi_current": 3.2}
+            self.sensors['power'] = {"battery_volt":8.1, "pi_volt":5.1, "pi_current": 1.6}
             self.sensors['accel_flt'] = self.filterAccelerometerReading({'x':-1.7860744384765623,'y':-9.016563452148437,'z':2.205059729003906})
             self.sensors['power_flt'] = self.filterPowerReading({"battery_volt":7.5, "pi_volt":5.1, "pi_current": 3.2})
 
@@ -202,12 +206,13 @@ class cc_sensors:
             cmd =["vcgencmd measure_temp | egrep -o '[0-9]*\.' | egrep -o '[0-9]*'"]
             address = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
             (out, err) = address.communicate()
-            system_data = {"core_temp":int(out)}
+            system_data = {"core_temp":int(out), "cpu_util": 34}
             self.sensors['system'] = system_data
             self.sensors['system_flt'] = self.filterSystemReading(system_data)
         else:
-            self.sensors['system'] = {"core_temp":33.05555555555}
-            self.sensors['system_flt'] = self.filterSystemReading({"core_temp":33.05555555555})
+            static_system_data = {"core_temp":33.05555555555, "cpu_util": 34}
+            self.sensors['system'] = static_system_data
+            self.sensors['system_flt'] = self.filterSystemReading(static_system_data)
 
     def readSensors1W(self):
         if cc_configuration.isHardwareSupported():
