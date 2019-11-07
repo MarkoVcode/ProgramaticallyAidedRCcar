@@ -157,8 +157,10 @@ class cc_sensors:
     def readSensorsI2C(self):
         if cc_configuration.isHardwareSupported():
             accelerometer_data = self.accelerometer.getData()
+            print("accelerometer_data")
             power_data = self.power.getPowerData()
             #print(power_data)
+            print("power_data")
             self.sensors['accel'] = accelerometer_data
             self.sensors['power'] = power_data
             self.sensors['accel_flt'] = self.filterAccelerometerReading(accelerometer_data)
