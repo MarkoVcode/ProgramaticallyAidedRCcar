@@ -57,7 +57,7 @@ class cc_i2c_adc_ADS1115:
             if self.init():
                 self._getValues()
             else:
-                self.calcVal = (0.0, 0.0, 0.0)
+                self.calcVal = DEFAULT_ADC_READING
         else:
             self._getValues()
 
