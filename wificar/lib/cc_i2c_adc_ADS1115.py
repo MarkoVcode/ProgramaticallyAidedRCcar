@@ -23,6 +23,8 @@ GAIN = [1, 2/3, 8, 1]
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
 
+DEFAULT_ADC_READING = (6.4, 5.0, 3.0, 0.0)
+
 class cc_i2c_adc_ADS1115:
     def __init__(self):
        self.adc = None
@@ -39,10 +41,16 @@ class cc_i2c_adc_ADS1115:
         return success       
 
     def getPowerData(self):
+        vals = None
         self.getValues()
         if self.calcVal == None:
             self.getValues()
-        return {"battery_volt": self.calcVal[0], "pi_volt": self.calcVal[1], "pi_current": self.calcVal[2]}
+        if self.calcVal is not None:
+            vals = self.calcVal
+        else:
+            vals = DEFAULT_ADC_READING
+        return {"battery_volt": vals[0], "pi_volt": vals[1], "pi_current": vals[2]}
+        
     
     def getValues(self):
         if self.adc is None:
