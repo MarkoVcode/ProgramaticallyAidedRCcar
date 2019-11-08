@@ -23,11 +23,13 @@ BATTERY_VOLTAGE_WARN = 7.2
 BATTERY_VOLTAGE_CRIT = 7.0
 
 METRICS_ON_CLOUD_ENABLED = True
-METRICS_ON_CLOUD_URL = "wss://metrics-on-cloud.appspot.com/chat"
-#METRICS_ON_CLOUD_URL = "ws://127.0.0.1:8081/chat"
+#METRICS_ON_CLOUD_URL = "wss://metrics-on-cloud.appspot.com/chat"
+METRICS_ON_CLOUD_URL = "ws://127.0.0.1:8081/chat"
 #METRICS_ON_CLOUD_URL = "ws://10.0.2.141:8081/chat"
 
 METRICS_CLOUD_UPDATE_EVERY_SEC = 0.01
+
+CAMERAS_LIST = ("/dev/camerafback", "/dev/cameraffront", "/dev/camerafront", "/dev/video0")
 
 #controll
 DIR_MAX_POSITION = 5

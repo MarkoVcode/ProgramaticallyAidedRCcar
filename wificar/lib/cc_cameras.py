@@ -1,3 +1,4 @@
+import cc_configuration
 import pygame
 import array
 
@@ -22,7 +23,7 @@ class cc_cameras:
         self.backMaxpy = 0
 
     def discoverCameras(self):
-        cam_list = pygame.camera.list_cameras()
+        cam_list = cc_configuration.CAMERAS_LIST
         i = 0
         while i < len(cam_list): 
             try:
@@ -86,3 +87,6 @@ class cc_cameras:
         while i < len(self.cameras):
             self.cameras[i].stop()
             i += 1
+
+if __name__ == '__main__':
+    print("camera")

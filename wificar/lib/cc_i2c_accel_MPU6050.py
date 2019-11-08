@@ -1,3 +1,4 @@
+
 import cc_configuration
 import logging
 from mpu6050 import mpu6050
