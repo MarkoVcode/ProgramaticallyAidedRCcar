@@ -38,6 +38,10 @@ sudo nmap -sn 10.0.2.0/24
 # sudo udevadm info --query=all --name=/dev/video2
 # 2)
 # sudo udevadm info -ap /devices/virtual/video4linux/video2
+# lrwxrwxrwx 1 root root 6 Nov  8 16:17 /dev/camerafback -> video1 - console stream video
+
+# video5
+ 
 
 
 refresh dependency list generation
