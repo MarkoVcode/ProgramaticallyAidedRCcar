@@ -29,7 +29,8 @@ METRICS_ON_CLOUD_URL = "ws://127.0.0.1:8081/chat"
 
 METRICS_CLOUD_UPDATE_EVERY_SEC = 0.01
 
-CAMERAS_LIST = ("/dev/camerafback", "/dev/cameraffront", "/dev/camerafront", "/dev/video0", "/dev/video1", "/dev/video3")
+#CAMERAS_LIST = ("/dev/video0", "/dev/video1", "/dev/video3")
+CAMERAS_LIST = ("/dev/cameraffront", "/dev/camerafback", "/dev/camerafront")
 
 #controll
 DIR_MAX_POSITION = 5
