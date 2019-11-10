@@ -1,9 +1,13 @@
 import cc_configuration
 import pygame
+import pygame.camera
+from pygame.locals import *
 import array
 
 class cc_cameras:
-    def __init__(self, screen):
+    def __init__(self, screen, camerasDevices=cc_configuration.CAMERAS_LIST):
+        pygame.camera.init()
+        self.cam_list = camerasDevices
         self.screen = screen
         self.cameras = []
         self.discoverCameras()
@@ -23,18 +27,31 @@ class cc_cameras:
         self.backMaxpy = 0
 
     def discoverCameras(self):
-        cam_list = cc_configuration.CAMERAS_LIST
         i = 0
-        while i < len(cam_list): 
+        while i < len(self.cam_list): 
             try:
-                cam = pygame.camera.Camera(cam_list[i],(640,480))
+                cam = pygame.camera.Camera(self.cam_list[i],(640,480))
                 cam.start()
                 self.cameras.append(cam)
             except:
-                print("cant initiate: " + cam_list[i])
+                print("cant initiate: " + self.cam_list[i])
             i += 1
         print("Discovered cameras: ")
         print(self.cameras)
+
+    def renderAllCameras(self, picSize):
+        i = 0
+        while i < len(self.cameras):
+            if i == 0:
+                position = (0,0)
+            elif i == 1:
+                position = (320,0)
+            elif i == 2:
+                position = (0,240)
+            elif i == 3:
+                position = (320,240)
+            self.drawCameraView(i, picSize, position)
+            i += 1
 
     def rotateCameraList(self):
         i = 0
@@ -45,11 +62,14 @@ class cc_cameras:
         self.cameras = newCamerasList
         print(self.cameras)
 
-    def modelFrontCameraView(self):
+    def modelFrontCameraView(self, instanceIndex=0, size=(640,480), position=(0,0)):
         if len(self.cameras) >= 1:
-            image = self.cameras[0].get_image()
-            image = pygame.transform.scale(image,(640,480))
-            self.screen.blit(image,(0,0))
+            self.drawCameraView(instanceIndex, size, position)
+
+    def drawCameraView(self, ind, picSize, position):
+        image = self.cameras[ind].get_image()
+        image = pygame.transform.scale(image, picSize)
+        self.screen.blit(image, position)
 
     def modelBackCameraView(self):
         self._drawBackCameraPicture(160, 120, 240, 356)
@@ -78,9 +98,7 @@ class cc_cameras:
 
     def _drawBackCameraPicture(self, x, y, px, py):
         if len(self.cameras) >= 2:
-            image = self.cameras[1].get_image()
-            image = pygame.transform.scale(image,(x,y))
-            self.screen.blit(image,(px,py))
+            self.drawCameraView(1, (x,y), (px,py))
 
     def stopCameras(self):
         i = 0
@@ -89,4 +107,23 @@ class cc_cameras:
             i += 1
 
 if __name__ == '__main__':
-    print("camera")
+    pygame.init()
+    clock = pygame.time.Clock()
+    testVideoDevices = ("/dev/video0", "/dev/video1", "/dev/video3")
+    #grid 4 cameras 320 x 240
+    display = pygame.display.set_mode((640, 480), 0)
+    cameras = cc_cameras(display, testVideoDevices)
+    run = True
+    while run:
+        cameras.renderAllCameras((320, 240))
+        pygame.display.flip()
+        #pygame.display.update()
+        pygame.time.wait(0)
+        clock.tick(25)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                run = False
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                run = False
+    cameras.stopCameras()
+    pygame.quit()

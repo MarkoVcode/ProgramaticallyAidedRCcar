@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import sys
 import pygame
-import pygame.camera
 import time
 import random
 import logging
@@ -25,7 +24,6 @@ clock = pygame.time.Clock()
 pygame.init() 
 pygame.mixer.quit()  #performance work around - not needed normally
 pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
-pygame.camera.init()
 
 #https://stackoverflow.com/questions/29135147/what-do-hwsurface-and-doublebuf-do
 screen = pygame.display.set_mode((640,480),0)

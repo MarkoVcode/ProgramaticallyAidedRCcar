@@ -4,7 +4,7 @@ from pygame.locals import *
 
 SIZEScreen = (640, 480)
 
-DEVICE1 = '/dev/video1'
+DEVICE1 = '/dev/video0'
 SIZE1 = (640, 480)
 FILENAME1 = 'capture1.png'
 
