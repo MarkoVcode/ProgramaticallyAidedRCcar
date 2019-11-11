@@ -51,8 +51,8 @@ class ProducerThread(threading.Thread):
                                     + ' : ' + str(q.qsize()) + ' items in queue')
                     if data:
                         sent = sock.sendto(data, address)
-            except:
-                logging.debug('Problem with producer: ')
+            except Exception as e:
+                logging.debug('Problem with producer: {0}'.format(e))
         return
 
 class ConsumerThread(threading.Thread):
@@ -74,8 +74,8 @@ class ConsumerThread(threading.Thread):
                                 + ' : ' + str(q.qsize()) + ' items in queue')
                     hw.executeIOInteraction(intId, str(item))
                 hw.readAllSensorsCycle()
-            except:
-                logging.debug('Problem with consumer: ')
+            except Exception as e:
+                logging.debug('Problem with consumer: {0}'.format(e))
         return
 
 class PushMetricsCloud(threading.Thread):
@@ -111,13 +111,13 @@ class PushMetricsCloud(threading.Thread):
                 result = self.wsc.recv()
                 #  print "Received '%s'" % result
                 self.retryDelay.reset()
-            except:
+            except Exception as e:
                 self.retryDelay.fail()
-                logging.debug('Problem with publishing metrics.')
+                logging.debug('Problem with publishing metrics: {0}'.format(e))
                 try:
                     self.wsc.close()
-                except:
-                    logging.debug('Can not close wsc')
+                except Exception as e:
+                    logging.debug('Can not close wsc: {0}'.format(e))
                     self.wsc = None
                     time.sleep(self.retryDelay.getDelay())
         return
@@ -140,8 +140,8 @@ class NetworkMonitor(threading.Thread):
             time.sleep(gameConfig.UDP_SERVER_DISPLAY_UPDATE_EVERY_SEC)
             try:
                 self.netInfo()
-            except:
-                logging.debug('Problem with display: ')
+            except Exception as e:
+                logging.debug('Problem with display: {0}'.format(e))
         return
 
     def netInfo(self):
@@ -192,6 +192,6 @@ if __name__ == '__main__':
         n.start()
         if gameConfig.METRICS_ON_CLOUD_ENABLED:
             m.start()
-    except:
-        logging.debug('Can not start. Socket in use.')
+    except Exception as e:
+        logging.debug('Can not start. Socket in use: {0}'.format(e))
         exit    
