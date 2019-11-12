@@ -2,11 +2,14 @@ import logging
 from time import sleep
 import serial
 import cc_configuration as gameConfig
+import json
+from collections import namedtuple
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
 
-ERROR_READINGS = "err"
+ERROR_READINGS = "{\"Z\":0}"
+
 # sudo usermod -a -G dialout pi
 
 class cc_uart_prox_HCSR04Array:
@@ -39,7 +42,8 @@ class cc_uart_prox_HCSR04Array:
         except Exception as e:
             self.ser = None
             logging.debug('Can not read serial: ' + str(gameConfig.PROXYMITY_SENSOR_UART) + ', error: {0}'.format(e))
-        return line
+        return json.loads(line)
+        #, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 
     def hasConnection(self):
         if self.ser:
@@ -49,16 +53,14 @@ class cc_uart_prox_HCSR04Array:
 
 if __name__ == '__main__':
     sonArr = cc_uart_prox_HCSR04Array()
-    print(sonArr.getData())
-
-#dziala
-#    import serial, time
-#    arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
-#    time.sleep(1) #give the connection a second to settle
-#    arduino.write("Hello from Python!")
-#    while True:
-#        arduino.write("n")
-#        data = arduino.readline()
-#        if data:
-#            print data.rstrip('\n') #strip out the new lines for now
-            # (better to do .read() in the long run for this reason
+    data = sonArr.getData()
+    datax = {}
+    for key in data:
+        datax[str(key)] = data[key]
+    x = {
+        "name": "John",
+        "age": 30,
+        "city": "New York"
+    }
+    x['proxi'] = {'data': datax}
+    print(x)

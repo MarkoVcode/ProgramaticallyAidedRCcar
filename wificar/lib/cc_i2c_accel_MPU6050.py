@@ -21,8 +21,8 @@ class cc_i2c_accel_MPU6050:
         try:
             self.accelerometer = mpu6050(address)
             success = True
-        except:
-            logging.debug('MPU6050 - not present')
+        except Exception as e:
+            logging.debug('MPU6050 - not present: {0}'.format(e))
         return success
 
     def getData(self):
@@ -37,7 +37,8 @@ class cc_i2c_accel_MPU6050:
     def _getAccelData(self):
         try:
             return self.accelerometer.get_accel_data()
-        except:
+        except Exception as e:
+            logging.debug('MPU6050: {0}'.format(e))
             self.accelerometer = None
             return DEFAULT_ACCEL_READING
 

@@ -1,8 +1,12 @@
+import logging
 import cc_configuration
 import pygame
 import pygame.camera
 from pygame.locals import *
 import array
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-9s) %(message)s',)
 
 class cc_cameras:
     def __init__(self, screen, camerasDevices=cc_configuration.CAMERAS_LIST):
@@ -33,8 +37,8 @@ class cc_cameras:
                 cam = pygame.camera.Camera(self.cam_list[i],(640,480))
                 cam.start()
                 self.cameras.append(cam)
-            except:
-                print("cant initiate: " + self.cam_list[i])
+            except Exception as e:
+                logging.debug('Camera init problem: {0}'.format(e))
             i += 1
         print("Discovered cameras: ")
         print(self.cameras)

@@ -6,6 +6,9 @@ import time
 import subprocess
 import cc_configuration
 from cc_sensor_filters import *
+import json
+
+from cc_uart_prox_HCSR04Array import cc_uart_prox_HCSR04Array
 
 if cc_configuration.isHardwareSupported():
     #import Adafruit_PCA9685
@@ -14,6 +17,7 @@ if cc_configuration.isHardwareSupported():
     from cc_i2c_accel_MPU6050 import cc_i2c_accel_MPU6050
     from cc_i2c_oled_SSD1306 import cc_i2c_oled_SSD1306
     from cc_i2c_adc_ADS1115 import cc_i2c_adc_ADS1115
+    from cc_uart_prox_HCSR04Array import cc_uart_prox_HCSR04Array
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -36,13 +40,17 @@ class cc_sensors:
         self.oled = None
         self.accelerometer = None
         self.power = None
-
+        self.sonar = None
+        
+        self.sonar = cc_uart_prox_HCSR04Array()
+        
         print "Hardware Init"
         if cc_configuration.isHardwareSupported():
             self.pwm = cc_i2c_pwm_PCA9685()
             self.oled = cc_i2c_oled_SSD1306()
             self.accelerometer = cc_i2c_accel_MPU6050()
             self.power = cc_i2c_adc_ADS1115()
+            self.sonar = cc_uart_prox_HCSR04Array()
 
     def interactionID(self, stringLength=5):
         letters = string.ascii_lowercase
@@ -220,7 +228,8 @@ class cc_sensors:
             self.sensors['1w'] = {'sensor1': 23}
         
     def readSensorsProximity(self):
-        if cc_configuration.isHardwareSupported():
-            self.sensors['proxi'] = {'A': 23}
-        else:
-            self.sensors['proxi'] = {'A': 23}
+        dataIn = self.sonar.getData()
+        data = {}
+        for key in dataIn:
+            data[str(key)] = dataIn[key]
+        self.sensors['proxi'] = {'data': data}
