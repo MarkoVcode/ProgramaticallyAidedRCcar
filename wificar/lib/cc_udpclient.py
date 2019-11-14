@@ -1,3 +1,4 @@
+import logging
 import socket
 import sys
 import json
@@ -30,6 +31,9 @@ UDP_MESSAGE_PREFIX_I2C_PWM = 'i2c:pwm:'
 UDP_MESSAGE_PREFIX_GPIO_PIN = 'gpio:pin:'
 UDP_MESSAGE_PREFIX_I2C_OLED = 'i2c:oled:'
 UDP_MESSAGE_PREFIX_SENSOR_READ = 'read:'
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-9s) %(message)s',)
 
 # define a class
 class cc_udpclient:
@@ -66,7 +70,8 @@ class cc_udpclient:
             sent = self.sock.sendto(message, self.server_address)
             data, server = self.sock.recvfrom(4096)
             self.connected = True
-        except:
+        except Exception as e:
+            logging.debug('Problem with sending UDP: {0}'.format(e))
             self.connected = False
         return data
     

@@ -28,8 +28,8 @@ class cc_i2c_io_PCF8574:
     def _writeByte(self, port, word):
         try: 
             print("write")
-        except:
-            logging.debug('PCF8574 ' + str(port) + ' - not present')
+        except Exception as e:
+            logging.debug('PCF8574 ' + str(port) + ' - not present: {0}'.format(e))
             self.ports[str(port)] = None
 
     def readByte(self, port):
@@ -38,8 +38,8 @@ class cc_i2c_io_PCF8574:
     def _readByte(self, port):
         try: 
             print("read")
-        except:
-            logging.debug('PCF8574 ' + str(port) + ' - not present')
+        except Exception as e:
+            logging.debug('PCF8574 ' + str(port) + ' - not present: {0}'.format(e))
             self.ports[str(port)] = None
        #https://www.raspberrypi.org/forums/viewtopic.php?t=176643
        #https://github.com/flyte/pcf8574/blob/develop/pcf8574/__init__.py

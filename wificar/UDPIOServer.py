@@ -98,7 +98,7 @@ class PushMetricsCloud(threading.Thread):
                     self.wsc = create_connection(gameConfig.METRICS_ON_CLOUD_URL)
                 readings = hw.fetchSensors('ALL')
                 control = hw.fetchControls()
-                self.identity["net"] = "localhost"
+                self.identity["srvId"] = "QH73P8"
                #print(wifi)
                 data = {}
                 data["control"] = control
@@ -107,9 +107,10 @@ class PushMetricsCloud(threading.Thread):
                 payload["vState"] = {}
                 payload["vState"]["identity"] = self.identity
                 payload["vState"]["data"] = data
+                payload["vState"]["net"] = networkInfo.getWIFIStatus()
                 self.wsc.send(json.dumps(payload))
                 result = self.wsc.recv()
-                #  print "Received '%s'" % result
+                #print "Received '%s'" % result
                 self.retryDelay.reset()
             except Exception as e:
                 self.retryDelay.fail()

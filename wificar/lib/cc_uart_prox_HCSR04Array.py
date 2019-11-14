@@ -17,15 +17,18 @@ class cc_uart_prox_HCSR04Array:
         self.ser = None
         self.values = None
         self.lastRead = None
+        self.errorsCounter = gameConfig.MUTE_REPETITIVE_ERRORS_AFTER_OCURRENCES
 
     def _init_serial(self):
         if not self.hasConnection():
             try:
                 self.ser = serial.Serial(gameConfig.PROXYMITY_SENSOR_UART, gameConfig.PROXYMITY_SENSOR_UART_SPEED) # Establish the connection on a specific port
+                self.errorCounterReset()
                 return True
             except Exception as e:
                 self.ser = None
-                logging.debug('Serial NOT connected! error: {0}'.format(e))
+                if self.errorCounter():
+                    logging.debug('Serial NOT connected! error: {0}'.format(e))
                 return False
         else:
             return True
@@ -39,9 +42,11 @@ class cc_uart_prox_HCSR04Array:
         try:
             self.ser.write("n")
             line = self.ser.readline() # Read the newest output from the Arduino
+            self.errorCounterReset()
         except Exception as e:
             self.ser = None
-            logging.debug('Can not read serial: ' + str(gameConfig.PROXYMITY_SENSOR_UART) + ', error: {0}'.format(e))
+            if self.errorCounter():
+                logging.debug('Can not read serial: ' + str(gameConfig.PROXYMITY_SENSOR_UART) + ', error: {0}'.format(e))
         return json.loads(line)
         #, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 
@@ -50,6 +55,15 @@ class cc_uart_prox_HCSR04Array:
             return True
         else:
             return False
+
+    def errorCounter(self):
+        if self.errorsCounter > 0:
+            self.errorsCounter = self.errorsCounter - 1
+            return True
+        return False
+
+    def errorCounterReset(self):
+        self.errorsCounter = gameConfig.MUTE_REPETITIVE_ERRORS_AFTER_OCURRENCES
 
 if __name__ == '__main__':
     sonArr = cc_uart_prox_HCSR04Array()

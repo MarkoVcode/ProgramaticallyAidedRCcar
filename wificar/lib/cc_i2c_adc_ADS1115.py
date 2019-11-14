@@ -1,6 +1,7 @@
 import time
 import logging
 import Adafruit_ADS1x15
+import cc_configuration as gameConfig
 
 ADC_RESOLUTION = 65536
 BATTERY_VOLTAGE_RANGE = 4.096 * 2  #gain 1
@@ -29,6 +30,7 @@ class cc_i2c_adc_ADS1115:
     def __init__(self):
        self.adc = None
        self.calcVal = None
+       self.errorsCounter = gameConfig.MUTE_REPETITIVE_ERRORS_AFTER_OCURRENCES
        self.init()
 
     def init(self):
@@ -36,8 +38,10 @@ class cc_i2c_adc_ADS1115:
         try:
             self.adc = Adafruit_ADS1x15.ADS1115()
             success = True
-        except:
-            logging.debug('ADS1115 - not present')
+            self.errorCounterReset()
+        except Exception as e:
+            if self.errorCounter():
+                logging.debug('ADS1115 - not present: {0}'.format(e))
         return success       
 
     def getPowerData(self):
@@ -61,6 +65,15 @@ class cc_i2c_adc_ADS1115:
         else:
             self._getValues()
 
+    def errorCounter(self):
+        if self.errorsCounter > 0:
+            self.errorsCounter = self.errorsCounter - 1
+            return True
+        return False
+
+    def errorCounterReset(self):
+        self.errorsCounter = gameConfig.MUTE_REPETITIVE_ERRORS_AFTER_OCURRENCES
+
     def _getValues(self):
         values = [0]*4
         valuesCalculated = [0]*4
@@ -76,8 +89,10 @@ class cc_i2c_adc_ADS1115:
                 if i == 3:
                     valuesCalculated[i] = values[i]
                 self.calcVal = valuesCalculated
-            except:
-                print("ADC - connection issue")
+                self.errorCounterReset()
+            except Exception as e:
+                if self.errorCounter():
+                    logging.debug('ADC - connection issue: {0}'.format(e))
 
 if __name__ == '__main__':
     adc = cc_i2c_adc_ADS1115()

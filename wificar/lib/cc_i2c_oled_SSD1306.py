@@ -37,8 +37,8 @@ class cc_i2c_oled_SSD1306:
             # Initialize library.
             self.disp.begin()
             success = True
-        except:
-            logging.debug('SSD1306 - not present')
+        except Exception as e:
+            logging.debug('SSD1306 - not present: {0}'.format(e))
         return success
 
     def writeText(self, text):
@@ -51,8 +51,8 @@ class cc_i2c_oled_SSD1306:
     def render(self, text):
         try:
             self._render(text)
-        except:
-            logging.debug('SSD1306 - not present')
+        except Exception as e:
+            logging.debug('SSD1306 - not present: {0}'.format(e))
             self.disp = None
 
     def _render(self, text):

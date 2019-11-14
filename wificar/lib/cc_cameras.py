@@ -114,8 +114,8 @@ if __name__ == '__main__':
     pygame.init()
     clock = pygame.time.Clock()
     #the order of instantiation matters!?
-    #testVideoDevices = ("/dev/video0", "/dev/video1", "/dev/video3")
-    testVideoDevices = ("/dev/cameraffront", "/dev/camerafback", "/dev/camerafront")
+    testVideoDevices = ("/dev/video0", "/dev/video1", "/dev/video3")
+    #testVideoDevices = ("/dev/cameraffront", "/dev/camerafback", "/dev/camerafront")
     #grid 4 cameras 320 x 240
     display = pygame.display.set_mode((640, 480), 0)
     cameras = cc_cameras(display, testVideoDevices)
