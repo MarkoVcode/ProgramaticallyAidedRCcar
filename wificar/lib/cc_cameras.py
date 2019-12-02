@@ -71,9 +71,10 @@ class cc_cameras:
             self.drawCameraView(instanceIndex, size, position)
 
     def drawCameraView(self, ind, picSize, position):
-        image = self.cameras[ind].get_image()
-        image = pygame.transform.scale(image, picSize)
-        self.screen.blit(image, position)
+        if self.cameras[ind].query_image():
+            image = self.cameras[ind].get_image()
+            image = pygame.transform.scale(image, picSize)
+            self.screen.blit(image, position)
 
     def modelBackCameraView(self):
         self._drawBackCameraPicture(160, 120, 240, 356)

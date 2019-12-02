@@ -99,7 +99,7 @@ class PushMetricsCloud(threading.Thread):
                 readings = hw.fetchSensors('ALL')
                 control = hw.fetchControls()
                 self.identity["srvId"] = "QH73P8"
-               #print(wifi)
+               #print(wifi) ConsumerThread - take controll  from there
                 data = {}
                 data["control"] = control
                 data["readings"] = readings

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pip install python-wifi
+
 #https://www.dafont.com/
 #https://www.linux-projects.org/uv4l/tutorials/play-retropie-in-browser/
 #https://www.linux-projects.org/uv4l/tutorials/rpi-webapp-screen-audio-keyboard-sharing/

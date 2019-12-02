@@ -1,0 +1,9 @@
+wlp2s0    IEEE 802.11  ESSID:"VisionDirect.co.uk2G"  
+          Mode:Managed  Frequency:2.412 GHz  Access Point: 78:8A:20:5A:C4:B8   
+          Bit Rate=144.4 Mb/s   Tx-Power=22 dBm   
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Power Management:on
+          Link Quality=58/70  Signal level=-52 dBm  
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:7  Invalid misc:2836   Missed beacon:0
+
