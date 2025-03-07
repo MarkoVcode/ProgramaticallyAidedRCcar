@@ -1,5 +1,16 @@
 #!/bin/bash
+#####################################
+sudo rpi-update
+#enable i2c, 
+sudo apt-get install python-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev python-numpy subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev
+git clone .....
+.
+pip install -r requirements.txt
+# start here:
+https://www.linux-projects.org/uv4l/installation/
+sudo apt-get install uv4l uv4l-raspidisp uv4l-raspidisp-extras uv4l-server uv4l-webrtc uv4l-demos
 
+#####################################
 pip install python-wifi
 
 #https://www.dafont.com/
@@ -17,12 +28,6 @@ https://stackoverflow.com/questions/43319199/how-to-loop-back-the-microphone-ent
 https://superuser.com/questions/87571/how-to-hear-mic-sound-over-speakers-ubuntu-karmic
 
 VD Guests
-
-adafruit-pca9685
-Adafruit-SSD1306
-mpu6050-raspberrypi
-
-sudo pip install adafruit-ads1x15
 
 #audio config
 cat /proc/asound/cards - to see the mic
@@ -45,8 +50,10 @@ sudo nmap -sn 10.0.2.0/24
 # video5
  
 
-
 refresh dependency list generation
+pip freeze > requirements.txt
+or
+pip install pipreqs
 pipreqs --force ProgramaticallyAidedRCcar/wificar
 
 

@@ -2,6 +2,7 @@
 import cc_configuration
 import logging
 from mpu6050 import mpu6050
+import cc_configuration as gameConfig
 
 DEFAULT_ACCEL_READING = {'x': 0, 'y': 0, 'z': 0}
 
@@ -14,6 +15,7 @@ class cc_i2c_accel_MPU6050:
         self.offsetX = None
         self.offsetY = None
         self.offsetZ = None
+        self.errorsCounter = gameConfig.MUTE_REPETITIVE_ERRORS_AFTER_OCURRENCES
         self.init()
 
     def init(self, address=0x68):
@@ -21,8 +23,10 @@ class cc_i2c_accel_MPU6050:
         try:
             self.accelerometer = mpu6050(address)
             success = True
+            self.errorCounterReset()
         except Exception as e:
-            logging.debug('MPU6050 - not present: {0}'.format(e))
+            if self.errorCounter():
+                logging.debug('MPU6050 - not present: {0}'.format(e))
         return success
 
     def getData(self):
@@ -36,7 +40,9 @@ class cc_i2c_accel_MPU6050:
 
     def _getAccelData(self):
         try:
-            return self.accelerometer.get_accel_data()
+            accelData = self.accelerometer.get_accel_data()
+            self.errorCounterReset()
+            return accelData
         except Exception as e:
             logging.debug('MPU6050: {0}'.format(e))
             self.accelerometer = None
@@ -48,6 +54,15 @@ class cc_i2c_accel_MPU6050:
             return DEFAULT_ACCEL_READING
         else:
             return data
+
+    def errorCounter(self):
+        if self.errorsCounter > 0:
+            self.errorsCounter = self.errorsCounter - 1
+            return True
+        return False
+
+    def errorCounterReset(self):
+        self.errorsCounter = gameConfig.MUTE_REPETITIVE_ERRORS_AFTER_OCURRENCES
 
     def offsetData(self, data):
         self.offsetX = data.x
