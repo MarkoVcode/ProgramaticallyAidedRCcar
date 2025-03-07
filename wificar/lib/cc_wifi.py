@@ -2,7 +2,7 @@
 import logging
 import socket
 import subprocess
-import cc_configuration
+import lib.cc_configuration as cc_configuration
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)

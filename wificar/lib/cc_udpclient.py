@@ -2,7 +2,7 @@ import logging
 import socket
 import sys
 import json
-import cc_configuration
+import lib.cc_configuration as cc_configuration
 
 # throttle neutral 350 max 370 min 330
 # dir neutral 340 max 380 min 300

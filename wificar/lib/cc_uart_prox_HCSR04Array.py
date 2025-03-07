@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 import serial
-import cc_configuration as gameConfig
+import lib.cc_configuration as gameConfig
 import json
 from collections import namedtuple
 

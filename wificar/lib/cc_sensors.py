@@ -4,11 +4,11 @@ import string
 import os
 import time
 import subprocess
-import cc_configuration
-from cc_sensor_filters import *
+import lib.cc_configuration as cc_configuration
+from lib.cc_sensor_filters import *
 import json
 
-from cc_uart_prox_HCSR04Array import cc_uart_prox_HCSR04Array
+from lib.cc_uart_prox_HCSR04Array import cc_uart_prox_HCSR04Array
 
 if cc_configuration.isHardwareSupported():
     #import Adafruit_PCA9685
@@ -44,7 +44,7 @@ class cc_sensors:
         
         self.sonar = cc_uart_prox_HCSR04Array()
         
-        print "Hardware Init"
+        print ("Hardware Init")
         if cc_configuration.isHardwareSupported():
             self.pwm = cc_i2c_pwm_PCA9685()
             self.oled = cc_i2c_oled_SSD1306()
@@ -83,7 +83,7 @@ class cc_sensors:
                 logging.debug(intId + ' EXECUTE GPIO-PIN Number: ' + str(instElems[2]) 
                               + ' Value: ' + str(instElems[3]))
         else:
-            print "Message Unrecognized - IGNORE"
+            print ("Message Unrecognized - IGNORE")
 
     def calculateServoPWMValue(self, requestedValue):
         #it is prepared to model non-linear progression here

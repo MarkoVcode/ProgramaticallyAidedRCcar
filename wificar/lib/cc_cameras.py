@@ -1,5 +1,5 @@
 import logging
-import cc_configuration
+import lib.cc_configuration as cc_configuration
 import pygame
 import pygame.camera
 from pygame.locals import *

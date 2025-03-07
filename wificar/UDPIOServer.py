@@ -1,10 +1,11 @@
 #!/usr/bin/python
+import asyncio
 import threading
 import os
 import time
 import logging
 import random
-import Queue
+#import Queue
 import socket
 import sys
 import json
@@ -13,6 +14,7 @@ from lib.cc_wifi import cc_wifi
 from lib.cc_sensors import cc_sensors
 from lib.cc_retry_delay import cc_retry_delay
 from websocket import create_connection
+
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-9s) %(message)s',)
@@ -24,7 +26,7 @@ networkInfo = cc_wifi()
 hw = cc_sensors()
 #wifi = ""
 BUF_SIZE = 20
-q = Queue.Queue(BUF_SIZE)
+q = asyncio.Queue(BUF_SIZE)
 
 class ProducerThread(threading.Thread):
     def __init__(self, group=None, target=None, name=None,

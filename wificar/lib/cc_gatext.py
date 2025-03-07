@@ -1,5 +1,5 @@
 import pygame
-from cc_gtext import cc_gtext
+from lib.cc_gtext import cc_gtext
 
 COLOUR_WHITE = (255, 255, 255)
 COLOUR_RED   = (252, 29, 25)
