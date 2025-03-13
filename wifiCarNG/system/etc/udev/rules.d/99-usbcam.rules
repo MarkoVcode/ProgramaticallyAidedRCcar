@@ -1,0 +1,13 @@
+# Use this match line if your device always shows up as /dev/video*.
+# Create a symlink /dev/mycamera to the underlying /dev/videoX
+SUBSYSTEM=="video4linux", KERNEL=="video[0-9]*", \
+    ATTRS{idVendor}=="0edc", ATTRS{idProduct}=="3080", \
+    ATTR{name}=="DH Camera: DH Camera", \
+    ATTR{index}=="0", \
+    MODE="0660", GROUP="video", SYMLINK+="camera_b"
+SUBSYSTEM=="video4linux", KERNEL=="video[0-9]*", \
+    ATTRS{idVendor}=="5149", ATTRS{idProduct}=="13d3", \
+    ATTR{name}=="USB 2.0 PC Cam", \
+    ATTR{index}=="0", \
+    MODE="0660", GROUP="video", SYMLINK+="camera_a"
+
