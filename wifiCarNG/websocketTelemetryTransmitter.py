@@ -1,31 +1,40 @@
-import asyncio
-import websockets
-import random
+import socket
 import json
+import random
 
-async def handler(websocket, path):
-    """
-    This function is called whenever a new client connects.
-    It sends two random numbers in JSON format to the client.
-    """
-    data = {
-        "number1": random.randint(1, 100),
-        "number2": random.randint(1, 100)
-    }
-    # Convert dictionary to JSON string
-    message = json.dumps(data)
-    
-    # Send the JSON to the client
-    await websocket.send(message)
-    # Optional: close the connection after sending
-    # await websocket.close()
+def server_program():
+    print("This Host: " + str(socket.gethostname()))
+    # get the hostname
 
-async def main():
-    async with websockets.serve(handler, "localhost", 8765):
-        print("WebSocket server started on ws://localhost:8765")
-        # Keep the server running forever
-        await asyncio.Future()
+    host = 'localhost'
+    port = 5000  # initiate port no above 1024
 
-if __name__ == "__main__":
-    asyncio.run(main())
+    server_socket = socket.socket()  # get instance
+    # look closely. The bind() function takes tuple as argument
+    server_socket.bind((host, port))  # bind host address and port together
 
+    # configure how many client the server can listen simultaneously
+    server_socket.listen(2)
+    while True:
+        conn, address = server_socket.accept()  # accept new connection
+        print("Connection from: " + str(address))
+        while True:
+            # receive data stream. it won't accept data packet greater than 1024 bytes
+            data = conn.recv(1024).decode()
+            if not data:
+                # if data is not received break
+                break
+            #print("from connected user: " + str(data))
+            message = {
+                            "type": "button_down",
+                            "joystick_id": "dddd",
+                            "button": random.randint(0, 100)
+                        }
+            data = json.dumps(message)
+            conn.send(data.encode())  # send data to the client
+        print("Disconnected!")
+        conn.close()  # close the connection
+
+
+if __name__ == '__main__':
+    server_program()

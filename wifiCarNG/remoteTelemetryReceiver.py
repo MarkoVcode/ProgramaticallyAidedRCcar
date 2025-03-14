@@ -1,15 +1,27 @@
-import asyncio
-import websockets
-import json
+import socket
+from time import sleep
 
-async def connect_and_receive():
-    uri = "ws://localhost:8765/"
-    async with websockets.connect(uri) as websocket:
-        # Wait to receive the message from the server
-        raw_message = await websocket.recv()
-        data = json.loads(raw_message)
-        print("Received JSON data:", data)
 
-if __name__ == "__main__":
-    asyncio.run(connect_and_receive())
+def client_program():
+    #host = socket.gethostname()  # as both code is running on same pc
+    host = 'localhost'
+    port = 5000  # socket server port number
 
+    client_socket = socket.socket()  # instantiate
+    client_socket.connect((host, port))  # connect to the server
+
+    message = input(" -> ")  # take input
+
+    while message.lower().strip() != 'bye':
+        client_socket.send(message.encode())  # send message
+        data = client_socket.recv(1024).decode()  # receive response
+
+        print(data)  # show in terminal
+        sleep(0.5)
+        message = 'telem'  # again take input
+
+    client_socket.close()  # close the connection
+
+
+if __name__ == '__main__':
+    client_program()
