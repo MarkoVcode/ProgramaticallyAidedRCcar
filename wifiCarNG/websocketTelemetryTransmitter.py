@@ -24,14 +24,24 @@ def server_program():
             if not data:
                 # if data is not received break
                 break
+            elif data == 'telem':
             #print("from connected user: " + str(data))
-            message = {
-                            "type": "button_down",
-                            "joystick_id": "dddd",
-                            "button": random.randint(0, 100)
-                        }
+                message = {
+                                "type": "button_down",
+                                "joystick_id": "dddd",
+                                "button": random.randint(0, 100)
+                            }
+            elif data == 'other':
+                message = {
+                                "button": random.randint(0, 100)
+                            }
+            else:
+                message = {
+                                "nothing": random.randint(0, 100)
+                            }
             data = json.dumps(message)
-            conn.send(data.encode())  # send data to the client
+            conn.send(data.encode())
+            message = '' # send data to the client
         print("Disconnected!")
         conn.close()  # close the connection
 

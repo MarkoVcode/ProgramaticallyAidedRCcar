@@ -3,17 +3,24 @@ import asyncio
 import json
 import pygame
 import websockets
+import lib.cc_configuration as app_config
+from time import sleep
 
 async def main(websocket_uri):
     # 1. Initialize Pygame and Joystick
-    pygame.init()
-    pygame.joystick.init()
-
-    joystick_count = pygame.joystick.get_count()
-    if joystick_count == 0:
-        print("No Bluetooth (or other) controller detected. Please pair/connect your gamepad and try again.")
-        return
-
+    #pygame.init()
+    joystick_count = 0
+    joystick_once = True
+    while joystick_count == 0:
+        pygame.init()
+        pygame.joystick.init()
+        joystick_count = pygame.joystick.get_count()
+        if joystick_count == 0:
+            sleep(0.5)
+            pygame.quit()
+            if joystick_once:
+                print("No Bluetooth (or other) controller detected. Please pair/connect your gamepad and try again.")
+                joystick_once = False
     # For simplicity, just use the first controller found
     joystick = pygame.joystick.Joystick(0)
     joystick.init()
@@ -83,19 +90,23 @@ async def main(websocket_uri):
                     print("Sent:", message)
 
             # Avoid maxing out CPU - limit to ~60 checks per second
-            clock.tick(30)
-            # await websocket.send(json.dumps({"type": "keepAlive"}))
+            clock.tick(25)
         # Clean up after loop ends
         joystick.quit()
         pygame.quit()
         print("Disconnected from WebSocket and closed Pygame.")
 
 if __name__ == "__main__":
+    websocket_url = ''
     if len(sys.argv) < 2:
         print("Usage: python bluetooth_controller_to_websocket.py ws://<HOST>:<PORT>")
-        sys.exit(1)
-
-    websocket_url = sys.argv[1]
+        print("No ws address provided - using the one from the config")
+        print(app_config.CONTROLLER_WS)
+        websocket_url = app_config.CONTROLLER_WS
+        #sys.exit(1)
+    else:
+        websocket_url = sys.argv[1]
+        
     try:
         asyncio.run(main(websocket_url))
     except KeyboardInterrupt:
