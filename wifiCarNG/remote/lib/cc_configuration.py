@@ -1,6 +1,6 @@
 import os
 
-CONTROLLER_WS = 'ws://192.168.50.217:6689'
+CONTROLLER_WS = 'ws://127.0.0.1:6689'
 
 def isHardwareSupported():
     if os.environ.get('HOME') == '/home/pi':
