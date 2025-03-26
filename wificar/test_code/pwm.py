@@ -1,6 +1,6 @@
 import Adafruit_PCA9685
 
-pwm = Adafruit_PCA9685.PCA9685()
+pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=3)
 
 pwm.set_pwm_freq(60)
 pwm.set_pwm(3, 0, x_change)
